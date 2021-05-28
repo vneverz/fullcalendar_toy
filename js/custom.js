@@ -221,7 +221,7 @@ $(document).ready(function () {
             editEvent(event);
 
         },
-        locale: 'zh-tw', // 改變顯示語言
+        locale: 'en', // 改變顯示語言
         timezone: "local",
         nextDayThreshold: "09:00:00",
         allDaySlot: true,
