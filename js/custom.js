@@ -97,19 +97,19 @@ $(document).ready(function () {
         unselect: function (jsEvent, view) {
             //$(".dropNewEvent").hide();
         },
-        dayClick: function (startDate, jsEvent, view) {
+        // dayClick: function (startDate, jsEvent, view) {
 
-            //var today = moment();
-            //var startDate;
+        //     var today = moment();
+        //     var startDate;
 
-            //if(view.name == "month"){
+        //     if(view.name == "month"){
 
-            //  startDate.set({ hours: today.hours(), minute: today.minutes() });
-            //  alert('Clicked on: ' + startDate.format());
+        //      startDate.set({ hours: today.hours(), minute: today.minutes() });
+        //      alert('Clicked on: ' + startDate.format());
 
-            //}
+        //     }
 
-        },
+        // },
         select: function (startDate, endDate, jsEvent, view) {
 
             var today = moment();
@@ -121,16 +121,16 @@ $(document).ready(function () {
                     hours: today.hours(),
                     minute: today.minutes()
                 });
-                startDate = moment(startDate).format('ddd DD MMM YYYY HH:mm');
-                endDate = moment(endDate).subtract('days', 1);
+                startDate = moment(startDate).format('YYYY-MM-DD HH:mm');
+                endDate = moment(endDate).subtract(1,'days');
                 endDate.set({
                     hours: today.hours() + 1,
                     minute: today.minutes()
                 });
-                endDate = moment(endDate).format('ddd DD MMM YYYY HH:mm');
+                endDate = moment(endDate).format('YYYY-MM-DD HH:mm');
             } else {
-                startDate = moment(startDate).format('ddd DD MMM YYYY HH:mm');
-                endDate = moment(endDate).format('ddd DD MMM YYYY HH:mm');
+                startDate = moment(startDate).format('YYYY-MM-DD HH:mm');
+                endDate = moment(endDate).format('YYYY-MM-DD HH:mm');
             }
 
             var $contextMenu = $("#contextMenu");
@@ -181,7 +181,7 @@ $(document).ready(function () {
 
         },
         locale: 'en', // 改變顯示語言
-        timezone: "local",
+        timezone: "Asia/Taipei",
         nextDayThreshold: "09:00:00",
         allDaySlot: true,
         displayEventTime: true,
@@ -193,7 +193,7 @@ $(document).ready(function () {
         eventLimit: true,
         eventLimitClick: 'week', //popover
         navLinks: true,
-        defaultDate: moment('2018-03-07'),
+        defaultDate: '2018-03-07',
         timeFormat: 'HH:mm',
         defaultTimedEventDuration: '01:00:00',
         editable: true,
@@ -202,7 +202,7 @@ $(document).ready(function () {
         slotLabelFormat: 'HH:mm',
         weekends: true,
         nowIndicator: true,
-        dayPopoverFormat: 'dddd DD/MM',
+        dayPopoverFormat: 'dddd DD MM',
         longPressDelay: 0,
         eventLongPressDelay: 0,
         selectLongPressDelay: 0,
@@ -324,13 +324,13 @@ $(document).ready(function () {
     });
 
     $("#starts-at, #ends-at").datetimepicker({
-        format: 'ddd DD MMM YYYY HH:mm'
+        format: 'YYYY-MM-DD HH:mm'
     });
 
     //var minDate = moment().subtract(0, 'days').millisecond(0).second(0).minute(0).hour(0);
 
     $(" #editStartDate, #editEndDate").datetimepicker({
-        format: 'ddd DD MMM YYYY HH:mm'
+        format: 'YYYY-MM-DD HH:mm'
         //minDate: minDate
     });
 
@@ -383,6 +383,8 @@ $(document).ready(function () {
         $('#save-event').on('click', function () {
             var title = $('input#title').val();
             var startDay = $('#starts-at').val();
+            console.log(eventData);
+            //Wed 28 Feb 2018 13:46
             if (!$(".allDayNewEvent").is(':checked')) {
                 var endDay = $('#ends-at').val();
             }
@@ -431,7 +433,7 @@ $(document).ready(function () {
             $(".allDayEdit").prop('checked', true);
         } else {
             $('#editEventModal').find('#editEndDate').attr("disabled", false);
-            $('#editEventModal').find('#editEndDate').val(event.end.format('ddd DD MMM YYYY HH:mm'));
+            $('#editEventModal').find('#editEndDate').val(event.end.format('YYYY-MM-DD HH:mm'));
             $(".allDayEdit").prop('checked', false);
         }
 
@@ -448,7 +450,7 @@ $(document).ready(function () {
         });
 
         $('#editTitle').val(event.title);
-        $('#editStartDate').val(event.start.format('ddd DD MMM YYYY HH:mm'));
+        $('#editStartDate').val(event.start.format('YYYY-MM-DD HH:mm'));
         $('#edit-calendar-type').val(event.calendar);
         $('#edit-event-desc').val(event.description);
         $('.eventName').text(event.title);
