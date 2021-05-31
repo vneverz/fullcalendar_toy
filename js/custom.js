@@ -43,45 +43,6 @@ $(document).ready(function () {
                 container: 'body'
             });
 
-            if (event.username == "Caio Vitorelli") {
-                element.css('background-color', '#f4516c');
-            }
-            if (event.username == "Peter Grant") {
-                element.css('background-color', '#1756ff');
-            }
-            if (event.username == "Adam Rackham") {
-                element.css('background-color', '#9816f4');
-            }
-
-            var show_username, show_type = true,
-                show_calendar = true;
-
-            var username = $('input:checkbox.filter:checked').map(function () {
-                return $(this).val();
-            }).get();
-            var types = $('#type_filter').val();
-            var calendars = $('#calendar_filter').val();
-
-            show_username = username.indexOf(event.username) >= 0;
-
-            if (types && types.length > 0) {
-                if (types[0] == "all") {
-                    show_type = true;
-                } else {
-                    show_type = types.indexOf(event.type) >= 0;
-                }
-            }
-
-            if (calendars && calendars.length > 0) {
-                if (calendars[0] == "all") {
-                    show_calendar = true;
-                } else {
-                    show_calendar = calendars.indexOf(event.calendar) >= 0;
-                }
-            }
-
-            return show_username && show_type && show_calendar;
-
         },
         customButtons: {
             printButton: {
@@ -122,8 +83,6 @@ $(document).ready(function () {
             }
         },
         eventLimitClick: function (cellInfo, event) {
-
-
         },
         eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
             $('.popover.fade.top').remove();
@@ -601,20 +560,6 @@ $(document).ready(function () {
         }
 
     }
-
-    //CREATE NEW CALENDAR AND APPEND
-
-    $('#addCustomCalendar').on('click', function () {
-
-        var newCalendarName = $("#inputCustomCalendar").val();
-        $('#calendar_filter, #calendar-type, #edit-calendar-type').append($('<option>', {
-            value: newCalendarName,
-            text: newCalendarName
-        }));
-        $("#inputCustomCalendar").val("");
-
-    });
-
     //WEATHER GRAMATICALLY
 
     function retira_acentos(str) {
@@ -636,44 +581,5 @@ $(document).ready(function () {
         }
         return novastr.toLowerCase().replace(/\s/g, '-');
     }
-
-    //WEATHER THEMES
-
-    document.getElementById('switchWeatherTheme').addEventListener('change', function () {
-
-        var valueTheme = $(this).val();
-        var widget = document.querySelector('.weatherwidget-io');
-        widget.setAttribute('data-theme', valueTheme);
-        __weatherwidget_init();
-
-    });
-
-    //WEATHER LOCATION
-    var input = document.getElementById('searchTextField');
-    var autocomplete = new google.maps.places.Autocomplete(input);
-
-    google.maps.event.addListener(autocomplete, 'place_changed', function () {
-        var place = autocomplete.getPlace();
-        var latitude = place.geometry.location.lat();
-        var longitude = place.geometry.location.lng();
-        var newPlace = retira_acentos(place.name);
-
-        var urlDataWeather = 'https://forecast7.com/zh-tw/' + latitude.toFixed(2).replace(/\./g, 'd').replace(/\-/g, 'n') + longitude.toFixed(2).replace(/\./g, 'd').replace(/\-/g, 'n') + '/' + newPlace + '/';
-
-        alert(urlDataWeather);
-
-        var weatherWidget = document.querySelector('.weatherwidget-io');
-        weatherWidget.href = urlDataWeather;
-        weatherWidget.dataset.label_1 = place.name;
-        __weatherwidget_init();
-
-        //document.getElementById('city2').value = place.name;
-        //document.getElementById('cityLat').value = place.geometry.location.lat();
-        //document.getElementById('cityLng').value = place.geometry.location.lng();
-        //alert("This function is working!");
-        //alert(place.name);
-        // alert(place.address_components[0].long_name);
-
-    });
 
 });

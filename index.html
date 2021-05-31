@@ -13,35 +13,6 @@
     <link rel="stylesheet" href="css/costum.css">
 </head>
 <body>
-    <div class="row">
-
-        <div class="col-lg-6">
-            <input class="form-control" id="searchTextField" type="text" size="50" placeholder="Enter a location"
-                autocomplete="on" runat="server" />
-        </div>
-
-        <div class="col-lg-6">
-            <select class="form-control" id="switchWeatherTheme">
-                <option value="weather_one">Weather Conditions</option>
-
-                <option value="original">Original</option>
-                <option value="pure">Pure</option>
-                <option value="orange">Orange</option>
-                <option value="gray">Gray</option>
-                <option value="dark">Dark</option>
-                <option value="desert">Desert</option>
-                <option value="candy">Candy</option>
-                <option value="beige">Beige</option>
-                <option value="blank">Blank</option>
-                <option value="salmon">Salmon</option>
-
-                <option value="marine">Marine</option>
-                <option value="mountains">Mountains</option>
-            </select>
-        </div>
-
-    </div>
-
 
     <div id="openviewWeather">
         <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/24d99121d30/taoyuan-city/" data-label_1="桃園市"
@@ -71,18 +42,7 @@
         </div>
         <div class="panel-body">
 
-            <div class="col-lg-4">
-
-                <label for="calendar_view">Add Custom Calendar</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="inputCustomCalendar" placeholder="Add Custom Calendar">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" id="addCustomCalendar">Add Calendar</button>
-                    </span>
-                </div>
-            </div>
-
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <div class="form-group">
                     <label for="calendar_view">View Mode</label>
                     <select class="form-control" id="calendar_view">
@@ -94,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <div class="form-group">
                     <label for="calendar_start_time">Start Time Agenda:</label>
                     <select class="form-control" id="calendar_start_time">
@@ -125,7 +85,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <div class="form-group">
                     <label for="calendar_end_time">End Time Agenda:</label>
                     <select class="form-control" id="calendar_end_time">
@@ -156,62 +116,13 @@
                 </div>
             </div>
 
-            <div class="col-lg-2">
+            <div class="col-lg-3">
 
                 <div class="form-group">
                     <label for="ShowWeekends">Calendar Weekends</label>
                     <div class="input-group">
                         <input class='showHideWeekend' type="checkbox" checked>
                     </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-
-    <div class="panel panel-default hidden-print">
-        <div class="panel-heading">
-            <h3 class="panel-title">Filter Calendar (Users, Calendar and Eventy Type)</h3>
-        </div>
-        <div class="panel-body">
-
-            <div class="col-lg-4">
-
-                <label for="calendar_view">Filter Eventy Type</label>
-                <div class="input-group">
-                    <select class="filter" id="type_filter" multiple="multiple">
-                        <option value="Appointment">Appointment</option>
-                        <option value="Check-in">Check-in</option>
-                        <option value="Checkout">Checkout</option>
-                        <option value="Inventory">Inventory</option>
-                        <option value="Valuation">Valuation</option>
-                        <option value="Viewing">Viewing</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-
-                <label for="calendar_view">Filter Calendars</label>
-                <div class="input-group">
-                    <select class="filter" id="calendar_filter" multiple="multiple">
-                        <option value="Sales">Sales</option>
-                        <option value="Lettings">Lettings</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-
-                <label for="calendar_view">Filter Users</label>
-                <div class="input-group">
-                    <label class="checkbox-inline"><input class='filter' type="checkbox" value="Caio Vitorelli"
-                            checked>Caio Vitorelli</label>
-                    <label class="checkbox-inline"><input class='filter' type="checkbox" value="Peter Grant"
-                            checked>Peter Grant</label>
-                    <label class="checkbox-inline"><input class='filter' type="checkbox" value="Adam Rackham"
-                            checked>Adam Rackham</label>
                 </div>
             </div>
 
