@@ -4,7 +4,7 @@ var editEvent;
 $(document).ready(function () {
 
     var calendar = $('#calendar').fullCalendar({
-        
+
         eventRender: function (event, element, view) {
 
             var startTimeEventInfo = moment(event.start).format('HH:mm');
@@ -82,8 +82,7 @@ $(document).ready(function () {
                 $(".fc-content").css('height', 'auto');
             }
         },
-        eventLimitClick: function (cellInfo, event) {
-        },
+        eventLimitClick: function (cellInfo, event) {},
         eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
             $('.popover.fade.top').remove();
         },
@@ -122,7 +121,7 @@ $(document).ready(function () {
                     minute: today.minutes()
                 });
                 startDate = moment(startDate).format('YYYY-MM-DD HH:mm');
-                endDate = moment(endDate).subtract(1,'days');
+                endDate = moment(endDate).subtract(1, 'days');
                 endDate.set({
                     hours: today.hours() + 1,
                     minute: today.minutes()
@@ -180,8 +179,7 @@ $(document).ready(function () {
             editEvent(event);
 
         },
-        locale: 'en', // 改變顯示語言
-        timezone: "Asia/Taipei",
+        locale: 'zh-tw', // 改變顯示語言
         nextDayThreshold: "09:00:00",
         allDaySlot: true,
         displayEventTime: true,
@@ -353,6 +351,7 @@ $(document).ready(function () {
         } else if (eventType == "Viewing") {
             colorEventyType = "colorViewing";
         }
+        // var connectionstring = "driver={sql server};server=192.168.2.129 ;database=GFUNHome;uid=doran;password=gfun16728098";
 
         $("#contextMenu").hide();
         $('.eventType').text(eventType);
@@ -383,7 +382,6 @@ $(document).ready(function () {
         $('#save-event').on('click', function () {
             var title = $('input#title').val();
             var startDay = $('#starts-at').val();
-            console.log(eventData);
             //Wed 28 Feb 2018 13:46
             if (!$(".allDayNewEvent").is(':checked')) {
                 var endDay = $('#ends-at').val();
@@ -407,6 +405,17 @@ $(document).ready(function () {
                     textColor: '#ffffff',
                     allDay: statusAllDay
                 };
+                // var data = new FormData();
+                // data.append( "json", JSON.stringify( eventData ) );
+                
+                // fetch("/echo/json/",
+                // {
+                //     method: "POST",
+                //     body: data
+                // })
+                // .then(function(res){ return res.json(); })
+                // .then(function(data){ alert( JSON.stringify( data ) ) })
+
                 $("#calendar").fullCalendar('renderEvent', eventData, true);
                 $('#newEventModal').find('input, textarea').val('');
                 $('#newEventModal').find('input:checkbox').prop('checked', false);
@@ -494,74 +503,7 @@ $(document).ready(function () {
         });
     }
 
-
-    //SET DEFAULT VIEW CALENDAR
-
-    var defaultCalendarView = $("#calendar_view").val();
-
-    if (defaultCalendarView == 'month') {
-        $('#calendar').fullCalendar('changeView', 'month');
-    } else if (defaultCalendarView == 'agendaWeek') {
-        $('#calendar').fullCalendar('changeView', 'agendaWeek');
-    } else if (defaultCalendarView == 'agendaDay') {
-        $('#calendar').fullCalendar('changeView', 'agendaDay');
-    } else if (defaultCalendarView == 'listWeek') {
-        $('#calendar').fullCalendar('changeView', 'listWeek');
-    }
-
-    $('#calendar_view').on('change', function () {
-
-        var defaultCalendarView = $("#calendar_view").val();
-        $('#calendar').fullCalendar('changeView', defaultCalendarView);
-
-    });
-
-    //SET MIN TIME AGENDA
-
-    $('#calendar_start_time').on('change', function () {
-
-        var minTimeAgendaView = $(this).val();
-        $('#calendar').fullCalendar('option', {
-            minTime: minTimeAgendaView
-        });
-
-    });
-
-    //SET MAX TIME AGENDA
-
-    $('#calendar_end_time').on('change', function () {
-
-        var maxTimeAgendaView = $(this).val();
-        $('#calendar').fullCalendar('option', {
-            maxTime: maxTimeAgendaView
-        });
-
-    });
-
-    //SHOW - HIDE WEEKENDS
-
-    var activeInactiveWeekends = false;
-    checkCalendarWeekends();
-
-    $('.showHideWeekend').on('change', function () {
-        checkCalendarWeekends();
-    });
-
-    function checkCalendarWeekends() {
-
-        if ($('.showHideWeekend').is(':checked')) {
-            activeInactiveWeekends = true;
-            $('#calendar').fullCalendar('option', {
-                weekends: activeInactiveWeekends
-            });
-        } else {
-            activeInactiveWeekends = false;
-            $('#calendar').fullCalendar('option', {
-                weekends: activeInactiveWeekends
-            });
-        }
-
-    }
+   
     //WEATHER GRAMATICALLY
 
     function retira_acentos(str) {
