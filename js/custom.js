@@ -3,6 +3,14 @@ var editEvent;
 
 $(document).ready(function () {
 
+    // fetch('http://127.0.0.1:5000/api/v1/rooms')
+    //     .then(function (response) {
+    //         return response.json();
+    //     })
+    //     .then(function (myJson) {
+    //         console.log(myJson);
+    //     });
+
     var calendar = $('#calendar').fullCalendar({
 
         eventRender: function (event, element, view) {
@@ -351,8 +359,6 @@ $(document).ready(function () {
         } else if (eventType == "Viewing") {
             colorEventyType = "colorViewing";
         }
-        // var connectionstring = "driver={sql server};server=192.168.2.129 ;database=GFUNHome;uid=doran;password=gfun16728098";
-
         $("#contextMenu").hide();
         $('.eventType').text(eventType);
         $('input#title').val("");
@@ -375,7 +381,7 @@ $(document).ready(function () {
         });
 
         //GENERATE RAMDON ID - JUST FOR TEST - DELETE IT
-        var eventId = 1 + Math.floor(Math.random() * 1000);
+        // var eventId = 1 + Math.floor(Math.random() * 1000);
         //GENERATE RAMDON ID - JUST FOR TEST - DELETE IT
 
         $('#save-event').unbind();
@@ -391,7 +397,6 @@ $(document).ready(function () {
             var type = eventType;
             if (title) {
                 var eventData = {
-                    _id: eventId,
                     title: title,
                     avatar: './image/group.png',
                     start: startDay,
@@ -405,16 +410,14 @@ $(document).ready(function () {
                     textColor: '#ffffff',
                     allDay: statusAllDay
                 };
-                // var data = new FormData();
-                // data.append( "json", JSON.stringify( eventData ) );
-                
-                // fetch("/echo/json/",
-                // {
-                //     method: "POST",
-                //     body: data
-                // })
-                // .then(function(res){ return res.json(); })
-                // .then(function(data){ alert( JSON.stringify( data ) ) })
+                fetch("http://127.0.0.1:5000/api/v1/event", {                        
+                        method: "POST",
+                        mode: 'cors', 
+                        body: JSON.stringify(eventData)
+                    })
+                    .then(res => res.text())
+                    .then(res => console.log(res))
+
 
                 $("#calendar").fullCalendar('renderEvent', eventData, true);
                 $('#newEventModal').find('input, textarea').val('');
@@ -503,7 +506,7 @@ $(document).ready(function () {
         });
     }
 
-   
+
     //WEATHER GRAMATICALLY
 
     function retira_acentos(str) {
