@@ -12,19 +12,14 @@ $(document).ready(function () {
 
             element.find(".fc-content").css('padding-left', '55px');
             element.find(".fc-content").after($("<div class=\"fc-avatar-image\"></div>").html('<img src="image/group.png" />'));
-        
-            if (event.allDay == false) {
-                displayEventDate = startTimeEventInfo + " - " + endTimeEventInfo;
-            } else {
-                displayEventDate = "All Day";
-            }
 
+            displayEventDate = startTimeEventInfo + " - " + endTimeEventInfo;
             element.popover({
                 title: '<div class="popoverTitleCalendar" style="background-color:#47acdf' + '; color:#ffffff">' + event.title + '</div>',
                 content: '<div class="popoverInfoCalendar">' +
                     '<p><strong>主席:</strong> ' + event.host + '</p>' +
                     '<p><strong>會議時間:</strong> ' + displayEventDate + '</p>' +
-                    '<div class="popoverDescCalendar"><strong>Description:</strong> ' + event.description + '</div>' +
+                    '<div class="popoverDescCalendar"><strong>內容:</strong> ' + event.description + '</div>' +
                     '</div>',
                 delay: {
                     show: "800",
@@ -128,8 +123,7 @@ $(document).ready(function () {
             var $contextMenu = $("#contextMenu");
 
             var HTMLContent = '<ul class="dropdown-menu dropNewEvent" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">' +
-                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Appointment" + '")\'> <a tabindex="-1" href="#">Add Appointment</a></li>' +            
-                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Viewing" + '")\'> <a tabindex="-1" href="#">Add Viewing</a></li>' +
+                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Appointment" + '")\'> <a tabindex="-1" href="#">新增活動</a></li>' +            
                 '<li class="divider"></li>' +
                 '<li><a tabindex="-1" href="#">關閉</a></li>' +
                 '</ul>';
@@ -138,7 +132,6 @@ $(document).ready(function () {
             $(".fc-body").on('click', 'td', function (e) {
 
                 document.getElementById('contextMenu').innerHTML = (HTMLContent);
-
                 $contextMenu.addClass("contextOpened");
                 $contextMenu.css({
                     display: "block",
@@ -164,13 +157,13 @@ $(document).ready(function () {
 
         },
         eventClick: function (event, jsEvent, view) {
-
+            
             editEvent(event);
 
         },
         locale: 'zh-tw', // 改變顯示語言
         nextDayThreshold: "09:00:00",
-        allDaySlot: true,
+        allDaySlot: false,
         displayEventTime: true,
         displayEventEnd: true,
         firstDay: 1,
@@ -195,7 +188,7 @@ $(document).ready(function () {
         selectLongPressDelay: 0,
 
         events: [{
-            _id: 1,
+            _id: 11,
             title: 'Michigan University',
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
             start: '2018-03-07T09:30',
@@ -203,9 +196,9 @@ $(document).ready(function () {
             host: 'Caio Vitorelli',
             attendees:'Beauty',
             className: 'colorViewing',
-            allDay: false
+            
         }, {
-            _id: 2,
+            _id: 12,
             title: 'California Polytechnic',
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
             start: '2018-03-01T12:30',
@@ -213,55 +206,27 @@ $(document).ready(function () {
             host: 'Adam Rackham',
             attendees:'Beast',
             className: 'colorViewing',
-            allDay: false
+           
         }, {
-            _id: 3,
-            title: 'Vermont University 2',
+            _id: 13,
+            title: 'Michigan University',
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-            start: '2018-03-02',
-            end: '2018-03-02',
+            start: '2018-03-03 09:30',
+            end: '2018-03-03 10:00',
+            host: 'Caio Vitorelli',
+            attendees:'Beauty',
             className: 'colorViewing',
-            attendees:'Flower',
-            host: 'Adam Rackham',
-            allDay: true
+            
         }, {
-            _id: 4,
+            _id: 14,
             title: 'Vermont University',
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-            start: '2018-03-06',
-            end: '2018-03-06',
+            start: '2018-03-06 09:30',
+            end: '2018-03-06 12:00',
             attendees:'Tree',
             className: 'colorViewing',
-            host: 'Peter Grant',
-            allDay: true
-        }, {
-            _id: 5,
-            title: 'Michigan High School',
-            description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-            start: '2018-03-08',
-            end: '2018-03-08',
-            className: 'colorViewing',
-            host: 'Peter Grant',
-            allDay: true
-        }, {
-            _id: 6,
-            title: 'Vermont High School',
-            description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-            start: '2018-03-09',
-            end: '2018-03-09',
-            className: 'colorViewing',
-            host: 'Peter Grant',
-            allDay: true
-        }, {
-            _id: 7,
-            title: 'California High School',            
-            description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-            start: '2018-03-07',
-            end: '2018-03-08',
-            attendees:'Birds',
-            className: 'colorViewing',
-            host: 'Caio Vitorelli',
-            allDay: true
+            host: 'Peter Grant'            
+            
         }]
 
     });
@@ -281,12 +246,9 @@ $(document).ready(function () {
 
     //CREATE NEW EVENT CALENDAR
 
-    newEvent = function (start, end, eventType) {
-
-        var colorEventyType = "colorViewing";
+    newEvent = function (start, end) {
 
         $("#contextMenu").hide();
-        $('.eventType').text(eventType);
         $('input#title').val("");
         $('#starts-at').val(start);
         $('#ends-at').val(end);
@@ -295,16 +257,16 @@ $(document).ready(function () {
         var statusAllDay;
         var endDay;
 
-        $('.allDayNewEvent').on('change', function () {
+        // $('.allDayNewEvent').on('change', function () {
 
-            if ($(this).is(':checked')) {
-                statusAllDay = true;
-                var endDay = $('#ends-at').prop('disabled', true);
-            } else {
-                statusAllDay = false;
-                var endDay = $('#ends-at').prop('disabled', false);
-            }
-        });
+        //     if ($(this).is(':checked')) {
+        //         statusAllDay = true;
+        //         var endDay = $('#ends-at').prop('disabled', true);
+        //     } else {
+        //         statusAllDay = false;
+        //         var endDay = $('#ends-at').prop('disabled', false);
+        //     }
+        // });
 
         //GENERATE RAMDON ID - JUST FOR TEST - DELETE IT
         var eventId = 1 + Math.floor(Math.random() * 1000);
@@ -312,13 +274,12 @@ $(document).ready(function () {
 
         $('#save-event').unbind();
         $('#save-event').on('click', function () {
+
             var title = $('input#title').val();
             var attendees = $('input#attendees').val();
             var startDay = $('#starts-at').val();
             //Wed 28 Feb 2018 13:46
-            if (!$(".allDayNewEvent").is(':checked')) {
-                var endDay = $('#ends-at').val();
-            }
+            var endDay = $('#ends-at').val();
             var description = $('#add-event-desc').val();
             if (title) {
                 var eventData = {
@@ -327,10 +288,9 @@ $(document).ready(function () {
                     end: endDay,
                     attendees:attendees,
                     description: description,
-                    host: 'Doran',
-                    allDay: statusAllDay
+                    host: 'Doran'
                 };
-                fetch(hostServer, {                        
+                fetch( addevent, {                        
                         method: 'POST',
                         mode: 'cors', 
                         body: JSON.stringify(eventData)
@@ -359,41 +319,16 @@ $(document).ready(function () {
 
         //$(".dropdown").hide().css("visibility", "hidden");
 
-        if (event.allDay == true) {
-            $('#editEventModal').find('#editEndDate').attr("disabled", true);
-            $('#editEventModal').find('#editEndDate').val("");
-            $(".allDayEdit").prop('checked', true);
-        } else {
-            $('#editEventModal').find('#editEndDate').attr("disabled", false);
-            $('#editEventModal').find('#editEndDate').val(event.end.format('YYYY-MM-DD HH:mm'));
-            $(".allDayEdit").prop('checked', false);
-        }
-
-        $('.allDayEdit').on('change', function () {
-
-            if ($(this).is(':checked')) {
-                $('#editEventModal').find('#editEndDate').attr("disabled", true);
-                $('#editEventModal').find('#editEndDate').val("");
-                $(".allDayEdit").prop('checked', true);
-            } else {
-                $('#editEventModal').find('#editEndDate').attr("disabled", false);
-                $(".allDayEdit").prop('checked', false);
-            }
-        });
         $('#editHost').val(event.host);
+        $('#editAttendees').val(event.attendees);
         $('#editTitle').val(event.title);
         $('#editStartDate').val(event.start.format('YYYY-MM-DD HH:mm'));
+        $('#editEndDate').val(event.end.format('YYYY-MM-DD HH:mm'));
         $('#edit-event-desc').val(event.description);
         $('.eventName').text(event.title);
         $('#editEventModal').modal('show');
         $('#updateEvent').unbind();
         $('#updateEvent').on('click', function () {
-            var statusAllDay;
-            if ($(".allDayEdit").is(':checked')) {
-                statusAllDay = true;
-            } else {
-                statusAllDay = false;
-            }
             var host = $('input#editHost').val();
             var attendees = $('input#attendees').val();
             var title = $('input#editTitle').val();
@@ -409,8 +344,17 @@ $(document).ready(function () {
                 event.start = startDate
                 event.end = endDate
                 event.description = description
-                event.allDay = statusAllDay
                 $("#calendar").fullCalendar('updateEvent', event);
+                //edit sql
+
+                fetch( addevent + '', {                        
+                    method: 'PUT',
+                    mode: 'cors', 
+                    body: JSON.stringify(eventData)
+                })
+                .then(res => res.text())
+                .then(res => console.log(res))
+
             } else {
                 alert("Title can't be blank. Please try again.")
             }
@@ -425,29 +369,6 @@ $(document).ready(function () {
             }
             $('#editEventModal').modal('hide');
         });
-    }
-
-
-    //WEATHER GRAMATICALLY
-
-    function retira_acentos(str) {
-        var com_acento = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝRÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿr";
-        var sem_acento = "AAAAAAACEEEEIIIIDNOOOOOOUUUUYRsBaaaaaaaceeeeiiiionoooooouuuuybyr";
-        var novastr = "";
-        for (i = 0; i < str.length; i++) {
-            troca = false;
-            for (a = 0; a < com_acento.length; a++) {
-                if (str.substr(i, 1) == com_acento.substr(a, 1)) {
-                    novastr += sem_acento.substr(a, 1);
-                    troca = true;
-                    break;
-                }
-            }
-            if (troca == false) {
-                novastr += str.substr(i, 1);
-            }
-        }
-        return novastr.toLowerCase().replace(/\s/g, '-');
     }
 
 });
