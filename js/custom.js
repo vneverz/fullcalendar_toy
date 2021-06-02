@@ -2,15 +2,6 @@ var newEvent;
 var editEvent;
 
 $(document).ready(function () {
-
-    // fetch('http://127.0.0.1:5000/api/v1/rooms')
-    //     .then(function (response) {
-    //         return response.json();
-    //     })
-    //     .then(function (myJson) {
-    //         console.log(myJson);
-    //     });
-
     var calendar = $('#calendar').fullCalendar({
 
         eventRender: function (event, element, view) {
@@ -339,7 +330,7 @@ $(document).ready(function () {
                     host: 'Doran',
                     allDay: statusAllDay
                 };
-                fetch("http://127.0.0.1:5000/api/v1/event", {                        
+                fetch(hostServer, {                        
                         method: 'POST',
                         mode: 'cors', 
                         body: JSON.stringify(eventData)
