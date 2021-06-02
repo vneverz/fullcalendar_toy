@@ -19,13 +19,9 @@ $(document).ready(function () {
             var endTimeEventInfo = moment(event.end).format('HH:mm');
             var displayEventDate;
 
-            if (event.avatar.length > 1) {
-
-                element.find(".fc-content").css('padding-left', '55px');
-                element.find(".fc-content").after($("<div class=\"fc-avatar-image\"></div>").html('<img src=\'' + event.avatar + '\' />'));
-
-            }
-
+            element.find(".fc-content").css('padding-left', '55px');
+            element.find(".fc-content").after($("<div class=\"fc-avatar-image\"></div>").html('<img src="image/group.png" />'));
+        
             if (event.allDay == false) {
                 displayEventDate = startTimeEventInfo + " - " + endTimeEventInfo;
             } else {
@@ -33,12 +29,10 @@ $(document).ready(function () {
             }
 
             element.popover({
-                title: '<div class="popoverTitleCalendar" style="background-color:' + event.backgroundColor + '; color:' + event.textColor + '">' + event.title + '</div>',
+                title: '<div class="popoverTitleCalendar" style="background-color:#47acdf' + '; color:#ffffff">' + event.title + '</div>',
                 content: '<div class="popoverInfoCalendar">' +
-                    '<p><strong>Calendar:</strong> ' + event.calendar + '</p>' +
-                    '<p><strong>Username:</strong> ' + event.username + '</p>' +
-                    '<p><strong>Event Type:</strong> ' + event.type + '</p>' +
-                    '<p><strong>Event Time:</strong> ' + displayEventDate + '</p>' +
+                    '<p><strong>主席:</strong> ' + event.host + '</p>' +
+                    '<p><strong>會議時間:</strong> ' + displayEventDate + '</p>' +
                     '<div class="popoverDescCalendar"><strong>Description:</strong> ' + event.description + '</div>' +
                     '</div>',
                 delay: {
@@ -143,14 +137,10 @@ $(document).ready(function () {
             var $contextMenu = $("#contextMenu");
 
             var HTMLContent = '<ul class="dropdown-menu dropNewEvent" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">' +
-                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Appointment" + '")\'> <a tabindex="-1" href="#">Add Appointment</a></li>' +
-                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Check-in" + '")\'> <a tabindex="-1" href="#">Add Check-In</a></li>' +
-                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Checkout" + '")\'> <a tabindex="-1" href="#">Add Checkout</a></li>' +
-                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Inventory" + '")\'> <a tabindex="-1" href="#">Add Inventory</a></li>' +
-                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Valuation" + '")\'> <a tabindex="-1" href="#">Add Valuation</a></li>' +
+                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Appointment" + '")\'> <a tabindex="-1" href="#">Add Appointment</a></li>' +            
                 '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Viewing" + '")\'> <a tabindex="-1" href="#">Add Viewing</a></li>' +
                 '<li class="divider"></li>' +
-                '<li><a tabindex="-1" href="#">Close</a></li>' +
+                '<li><a tabindex="-1" href="#">關閉</a></li>' +
                 '</ul>';
 
             $(".fc-body").unbind('click');
@@ -216,127 +206,85 @@ $(document).ready(function () {
         events: [{
             _id: 1,
             title: 'Michigan University',
-            avatar: './image/group.png',
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
             start: '2018-03-07T09:30',
             end: '2018-03-07T10:00',
-            type: 'Appointment',
-            calendar: 'Sales',
-            className: 'colorAppointment',
-            username: 'Caio Vitorelli',
-            backgroundColor: "#f4516c",
-            textColor: "#ffffff",
+            host: 'Caio Vitorelli',
+            attendees:'Beauty',
+            className: 'colorViewing',
             allDay: false
         }, {
             _id: 2,
             title: 'California Polytechnic',
-            avatar: './image/group.png',
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
             start: '2018-03-01T12:30',
             end: '2018-03-01T15:30',
-            type: 'Appointment',
-            calendar: 'Sales',
-            className: 'colorAppointment',
-            username: 'Adam Rackham',
-            backgroundColor: "#9816f4",
-            textColor: "#ffffff",
+            host: 'Adam Rackham',
+            attendees:'Beast',
+            className: 'colorViewing',
             allDay: false
         }, {
             _id: 3,
             title: 'Vermont University 2',
-            avatar: './image/group.png',
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
             start: '2018-03-02',
             end: '2018-03-02',
-            type: 'Check-in',
-            calendar: 'Sales',
-            className: 'colorCheck-in',
-            username: 'Adam Rackham',
-            backgroundColor: "#9816f4",
-            textColor: "#ffffff",
+            className: 'colorViewing',
+            attendees:'Flower',
+            host: 'Adam Rackham',
             allDay: true
         }, {
             _id: 4,
             title: 'Vermont University',
-            avatar: '',
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
             start: '2018-03-06',
             end: '2018-03-06',
-            type: 'Checkout',
-            calendar: 'Sales',
-            className: 'colorCheckout',
-            username: 'Peter Grant',
-            backgroundColor: "#1756ff",
-            textColor: "#ffffff",
+            attendees:'Tree',
+            className: 'colorViewing',
+            host: 'Peter Grant',
             allDay: true
         }, {
             _id: 5,
             title: 'Michigan High School',
-            avatar: '',
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
             start: '2018-03-08',
             end: '2018-03-08',
-            type: 'Inventory',
-            calendar: 'Lettings',
-            className: 'colorInventory',
-            username: 'Peter Grant',
-            backgroundColor: "#1756ff",
-            textColor: "#ffffff",
+            className: 'colorViewing',
+            host: 'Peter Grant',
             allDay: true
         }, {
             _id: 6,
             title: 'Vermont High School',
-            avatar: '',
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
             start: '2018-03-09',
             end: '2018-03-09',
-            type: 'Valuation',
-            calendar: 'Lettings',
-            className: 'colorValuation',
-            username: 'Peter Grant',
-            backgroundColor: "#1756ff",
-            textColor: "#ffffff",
+            className: 'colorViewing',
+            host: 'Peter Grant',
             allDay: true
         }, {
             _id: 7,
-            title: 'California High School',
-            avatar: './image/group.png',
+            title: 'California High School',            
             description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
             start: '2018-03-07',
             end: '2018-03-08',
-            type: 'Viewing',
-            calendar: 'Lettings',
+            attendees:'Birds',
             className: 'colorViewing',
-            username: 'Caio Vitorelli',
-            backgroundColor: "#f4516c",
-            textColor: "#ffffff",
+            host: 'Caio Vitorelli',
             allDay: true
         }]
 
     });
 
-    $('.filter').on('change', function () {
-        $('#calendar').fullCalendar('rerenderEvents');
-    });
-
-    $("#type_filter").select2({
-        placeholder: "Filter Types",
-        allowClear: true
-    });
-
-    $("#calendar_filter").select2({
-        placeholder: "Filter Calendars",
-        allowClear: true
-    });
-
     $("#starts-at, #ends-at").datetimepicker({
-        format: 'YYYY-MM-DD HH:mm'
+        format: 'YYYY-MM-DD HH:mm',
+        locale:"zh-tw"
     });
 
     //var minDate = moment().subtract(0, 'days').millisecond(0).second(0).minute(0).hour(0);
 
     $(" #editStartDate, #editEndDate").datetimepicker({
-        format: 'YYYY-MM-DD HH:mm'
+        format: 'YYYY-MM-DD HH:mm',
+        locale:"zh-tw"
         //minDate: minDate
     });
 
@@ -344,21 +292,8 @@ $(document).ready(function () {
 
     newEvent = function (start, end, eventType) {
 
-        var colorEventyType;
+        var colorEventyType = "colorViewing";
 
-        if (eventType == "Appointment") {
-            colorEventyType = "colorAppointment";
-        } else if (eventType == "Check-in") {
-            colorEventyType = "colorCheck-in";
-        } else if (eventType == "Checkout") {
-            colorEventyType = "colorCheckout";
-        } else if (eventType == "Inventory") {
-            colorEventyType = "colorInventory";
-        } else if (eventType == "Valuation") {
-            colorEventyType = "colorValuation";
-        } else if (eventType == "Viewing") {
-            colorEventyType = "colorViewing";
-        }
         $("#contextMenu").hide();
         $('.eventType').text(eventType);
         $('input#title').val("");
@@ -381,37 +316,31 @@ $(document).ready(function () {
         });
 
         //GENERATE RAMDON ID - JUST FOR TEST - DELETE IT
-        // var eventId = 1 + Math.floor(Math.random() * 1000);
+        var eventId = 1 + Math.floor(Math.random() * 1000);
         //GENERATE RAMDON ID - JUST FOR TEST - DELETE IT
 
         $('#save-event').unbind();
         $('#save-event').on('click', function () {
             var title = $('input#title').val();
+            var attendees = $('input#attendees').val();
             var startDay = $('#starts-at').val();
             //Wed 28 Feb 2018 13:46
             if (!$(".allDayNewEvent").is(':checked')) {
                 var endDay = $('#ends-at').val();
             }
-            var calendar = $('#calendar-type').val();
             var description = $('#add-event-desc').val();
-            var type = eventType;
             if (title) {
                 var eventData = {
                     title: title,
-                    avatar: './image/group.png',
                     start: startDay,
                     end: endDay,
+                    attendees:attendees,
                     description: description,
-                    type: type,
-                    calendar: calendar,
-                    className: colorEventyType,
-                    username: 'Caio Vitorelli',
-                    backgroundColor: '#1756ff',
-                    textColor: '#ffffff',
+                    host: 'Doran',
                     allDay: statusAllDay
                 };
                 fetch("http://127.0.0.1:5000/api/v1/event", {                        
-                        method: "POST",
+                        method: 'POST',
                         mode: 'cors', 
                         body: JSON.stringify(eventData)
                     })
@@ -460,10 +389,9 @@ $(document).ready(function () {
                 $(".allDayEdit").prop('checked', false);
             }
         });
-
+        $('#editHost').val(event.host);
         $('#editTitle').val(event.title);
         $('#editStartDate').val(event.start.format('YYYY-MM-DD HH:mm'));
-        $('#edit-calendar-type').val(event.calendar);
         $('#edit-event-desc').val(event.description);
         $('.eventName').text(event.title);
         $('#editEventModal').modal('show');
@@ -475,18 +403,20 @@ $(document).ready(function () {
             } else {
                 statusAllDay = false;
             }
+            var host = $('input#editHost').val();
+            var attendees = $('input#attendees').val();
             var title = $('input#editTitle').val();
             var startDate = $('input#editStartDate').val();
             var endDate = $('input#editEndDate').val();
-            var calendar = $('#edit-calendar-type').val();
             var description = $('#edit-event-desc').val();
             $('#editEventModal').modal('hide');
             var eventData;
             if (title) {
+                event.host = host
+                event.attendees = attendees
                 event.title = title
                 event.start = startDate
                 event.end = endDate
-                event.calendar = calendar
                 event.description = description
                 event.allDay = statusAllDay
                 $("#calendar").fullCalendar('updateEvent', event);

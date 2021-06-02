@@ -17,7 +17,6 @@
 
 <body>
     <div class="row">
-
         <div id="openviewWeather">
             <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/24d99121d30/taoyuan-city/" data-label_1="桃園市"
                 data-label_2="天氣" data-font="微軟正黑體 (Microsoft JhengHei)" data-icons="Climacons Animated"
@@ -54,55 +53,58 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Create new <span class="eventType"></span></h4>
+                    <h4 class="modal-title">新增 <span class="eventType"></span></h4>
                 </div>
                 <div class="modal-body">
 
                     <div class="row">
                         <div class="col-xs-12">
-                            <label class="col-xs-4" for="title">All Day Event ?</label>
+                            <label class="col-xs-4" for="title">全天會議 ?</label>
                             <input class='allDayNewEvent' type="checkbox"></label>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-xs-12">
-                            <label class="col-xs-4" for="title">Event title</label>
+                            <label class="col-xs-4" for="title">*主席</label>
+                            <input class="inputModal" type="text" name="host" id="host" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label class="col-xs-4" for="title">*會議主題</label>
                             <input class="inputModal" type="text" name="title" id="title" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
-                            <label class="col-xs-4" for="starts-at">Starts at</label>
+                            <label class="col-xs-4" for="title">與會者</label>
+                            <input class="inputModal" type="text" name="attendees" id="attendees" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label class="col-xs-4" for="starts-at">開始時間</label>
                             <input class="inputModal" type="text" name="starts_at" id="starts-at" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
-                            <label class="col-xs-4" for="ends-at">Ends at</label>
+                            <label class="col-xs-4" for="ends-at">結束時間</label>
                             <input class="inputModal" type="text" name="ends_at" id="ends-at" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
-                            <label class="col-xs-4" for="calendar-type">Calendar</label>
-                            <select class="inputModal" type="text" name="calendar-type" id="calendar-type">
-                                <option value="Sales">Sales</option>
-                                <option value="Lettings">Lettings</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <label class="col-xs-4" for="add-event-desc">Description</label>
+                            <label class="col-xs-4" for="add-event-desc">大綱</label>
                             <textarea rows="4" cols="50" class="inputModal" name="add-event-desc"
                                 id="add-event-desc"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="save-event">Save changes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-primary" id="save-event">儲存</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -117,7 +119,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">編輯 <span class="eventName"></span></h4>
+                    <h4 class="modal-title">編輯<span class="eventName"></span></h4>
                 </div>
                 <div class="modal-body">
 
@@ -125,51 +127,55 @@
 
                     <div class="row">
                         <div class="col-xs-12">
-                            <label class="col-xs-4" for="title">All Day Event ?</label>
+                            <label class="col-xs-4" for="title">全天會議 ?</label>
                             <input class='allDayEdit' type="checkbox"></label>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-xs-12">
-                            <label class="col-xs-4" for="title">Event title</label>
-                            <input class="inputModal" type="text" name="editTitle" id="editTitle" />
+                            <label class="col-xs-4" for="title">*主席</label>
+                            <input class="inputModal" type="text" name="editHost" id="editHost" />
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-xs-12">
-                            <label class="col-xs-4" for="starts-at">Starts at</label>
+                            <label class="col-xs-4" for="title">*會議主題</label>
+                            <input class="inputModal" type="text" name="editTitle" id="editTitle" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label class="col-xs-4" for="title">與會者</label>
+                            <input class="inputModal" type="text" name="editAttendees" id="editAttendees" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label class="col-xs-4" for="starts-at">開始時間</label>
                             <input class="inputModal" type="text" name="editStartDate" id="editStartDate" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
-                            <label class="col-xs-4" for="ends-at">Ends at</label>
+                            <label class="col-xs-4" for="ends-at">結束時間</label>
                             <input class="inputModal" type="text" name="editEndDate" id="editEndDate" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
-                            <label class="col-xs-4" for="edit-calendar-type">Calendar</label>
-                            <select class="inputModal" type="text" name="edit-calendar-type" id="edit-calendar-type">
-                                <option value="Sales">Sales</option>
-                                <option value="Lettings">Lettings</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <label class="col-xs-4" for="edit-event-desc">Description</label>
+                            <label class="col-xs-4" for="edit-event-desc">大綱</label>
                             <textarea rows="4" cols="50" class="inputModal" name="edit-event-desc"
                                 id="edit-event-desc"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger" id="deleteEvent">Delete Event</button>
-                    <button type="button" class="btn btn-primary" id="updateEvent">Save changes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-danger" id="deleteEvent">刪除</button>
+                    <button type="button" class="btn btn-primary" id="updateEvent">儲存變更</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -180,7 +186,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar//3.10.2/locale-all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/locale-all.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js">
