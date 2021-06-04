@@ -284,7 +284,7 @@ $(document).ready(function () {
         $('#editStartDate').val(event.start.format('YYYY-MM-DD HH:mm'));
         $('#editEndDate').val(event.end.format('YYYY-MM-DD HH:mm'));
         $('#edit-event-desc').val(event.note);
-        $('.eventName').text(event.title);
+        $('.eventName').text(":"+event.title);
         $('#editEventModal').modal('show');
         $('#updateEvent').unbind();
         $('#updateEvent').on('click', function () {
@@ -319,8 +319,10 @@ $(document).ready(function () {
         $('#deleteEvent').on('click', function () {
             $('#deleteEvent').unbind();
             if (event._id.includes("_fc")) {
+                fetchandAlert(updateEventURL + event.id, "DELETE")
                 $("#calendar").fullCalendar('removeEvents', [event._id]);
             } else {
+                fetchandAlert(updateEventURL + event.id, "DELETE")
                 $("#calendar").fullCalendar('removeEvents', [event._id]);
             }
             $('#editEventModal').modal('hide');
