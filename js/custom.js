@@ -288,12 +288,17 @@ $(document).ready(function () {
         $('#editEventModal').modal('show');
         $('#updateEvent').unbind();
         $('#updateEvent').on('click', function () {
+
             var host = $('input#editHost').val();
             var attendees = $('input#editAttendees').val();
             var title = $('input#editTitle').val();
             var startDate = $('input#editStartDate').val();
             var endDate = $('input#editEndDate').val();
             var note = $('#edit-event-desc').val();
+            if(startDate > endDate) {
+                $('#editStartDate').val("開始時間晚於結束時間，請重新輸入！");
+                return;
+            }
             $('#editEventModal').modal('hide');
             var eventData;
             var updateObj = {"host":host,"attendees":attendees,"title":title,"start":startDate,
