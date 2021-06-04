@@ -3,6 +3,23 @@ var editEvent;
 
 $(document).ready(function () {
 
+    function fetchandAlert(url, method, obj) {
+        fetch(url , {
+                method: method,
+                mode: 'cors',
+                body: JSON.stringify(obj)
+            })
+            .then(res => res.text())
+            .then(res => {
+                $("#insavetext").text(res);
+                window.setTimeout(function () {
+                    $("#alertbox").fadeIn(1000, 'linear').fadeOut(2500, function () {
+                        $(this).hide();
+                    });
+                }, 100)
+            })
+    }
+
     var calendar = $('#calendar').fullCalendar({
 
         eventRender: function (event, element, view) {
@@ -80,24 +97,11 @@ $(document).ready(function () {
             draggedEventIsAllDay = event.allDay;
         },
         eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
-            $('.popover.fade.top').remove();
+            let updateObj = {"host":event.host,"attendees":event.attendees,"title":event.title,"start":event.start.format('YYYY-MM-DD HH:mm'),"end":event.end.format('YYYY-MM-DD HH:mm'),"note":event.note, "timeId": moment().format('YYYY-MM-DD HH:mm:ss')}
+            fetchandAlert(updateEventURL + event.id, "PUT", updateObj);
         },
         unselect: function (jsEvent, view) {
-            //$(".dropNewEvent").hide();
         },
-        // dayClick: function (startDate, jsEvent, view) {
-
-        //     var today = moment();
-        //     var startDate;
-
-        //     if(view.name == "month"){
-
-        //      startDate.set({ hours: today.hours(), minute: today.minutes() });
-        //      alert('Clicked on: ' + startDate.format());
-
-        //     }
-
-        // },
         select: function (startDate, endDate, jsEvent, view) {
 
             var today = moment();
@@ -140,7 +144,6 @@ $(document).ready(function () {
                     top: e.pageY
                 });
                 return false;
-
             });
 
             $contextMenu.on("click", "a", function (e) {
@@ -188,7 +191,7 @@ $(document).ready(function () {
         eventLongPressDelay: 0,
         selectLongPressDelay: 0,
         events: {
-            url: getEvents,            
+            url: getEventsURL,            
             success: function(res) {    
                 let arrl = [];                             
                 res.forEach(function(val){
@@ -198,56 +201,14 @@ $(document).ready(function () {
                 });                
                 return arrl; 
             }
-        }
-        // events: [{
-            // id: 11,
-            // title: 'Michigan University',
-            // note: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-            // start: '2021-05-22 09:30',
-            // end: '2021-05-22 10:00',
-            // host: 'Caio Vitorelli',
-            // attendees:'Beauty',
-            // className: 'colorViewing'
-        // }, {
-        //     _id: 12,
-        //     title: 'California Polytechnic',
-        //     description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-        //     start: '2018-03-01T12:30',
-        //     end: '2018-03-01T15:30',
-        //     host: 'Adam Rackham',
-        //     attendees:'Beast',
-        //     className: 'colorViewing',
-
-        // }, {
-        //     _id: 13,
-        //     title: 'Michigan University',
-        //     description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-        //     start: '2018-03-03 09:30',
-        //     end: '2018-03-03 10:00',
-        //     host: 'Caio Vitorelli',
-        //     attendees:'Beauty',
-        //     className: 'colorViewing',
-
-        // }, {
-        //     _id: 14,
-        //     title: 'Vermont University',
-        //     description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-        //     start: '2018-03-06 09:30',
-        //     end: '2018-03-06 12:00',
-        //     attendees:'Tree',
-        //     className: 'colorViewing',
-        //     host: 'Peter Grant'            
-        // }]
-
+        }    
     });
 
     $("#starts-at, #ends-at").datetimepicker({
         format: 'YYYY-MM-DD HH:mm',
         locale: "zh-tw"
     });
-
     //var minDate = moment().subtract(0, 'days').millisecond(0).second(0).minute(0).hour(0);
-
     $(" #editStartDate, #editEndDate").datetimepicker({
         format: 'YYYY-MM-DD HH:mm',
         locale: "zh-tw"
@@ -267,24 +228,14 @@ $(document).ready(function () {
         var statusAllDay;
         var endDay;
 
-        // $('.allDayNewEvent').on('change', function () {
-
-        //     if ($(this).is(':checked')) {
-        //         statusAllDay = true;
-        //         var endDay = $('#ends-at').prop('disabled', true);
-        //     } else {
-        //         statusAllDay = false;
-        //         var endDay = $('#ends-at').prop('disabled', false);
-        //     }
-        // });
-
         //GENERATE RAMDON ID - JUST FOR TEST - DELETE IT
+
         var eventId = 1 + Math.floor(Math.random() * 1000);
         //GENERATE RAMDON ID - JUST FOR TEST - DELETE IT
 
         $('#save-event').unbind();
         $('#save-event').on('click', function () {
-
+            var host = $('input#host').val();
             var title = $('input#title').val();
             var attendees = $('input#attendees').val();
             var startDay = $('#starts-at').val();
@@ -301,17 +252,11 @@ $(document).ready(function () {
                     start: startDay,
                     end: endDay,
                     attendees: attendees,
+                    timeId: moment().format('YYYY-MM-DD HH:mm:ss'),
                     note: note,
-                    host: 'Doran'
+                    host: host
                 };
-                fetch(addEvent, {
-                        method: 'POST',
-                        mode: 'cors',
-                        body: JSON.stringify(eventData)
-                    })
-                    .then(res => res.text())
-                    .then(res => console.log(res))
-
+                fetchandAlert(addEventURL,'POST', eventData)
 
                 $("#calendar").fullCalendar('renderEvent', eventData, true);
                 $('#newEventModal').find('input, textarea').val('');
@@ -351,6 +296,10 @@ $(document).ready(function () {
             var note = $('#edit-event-desc').val();
             $('#editEventModal').modal('hide');
             var eventData;
+            var updateObj = {"host":host,"attendees":attendees,"title":title,"start":startDate,
+            "end":endDate,"note":note, "timeId": moment().format('YYYY-MM-DD HH:mm:ss')
+        };
+
             if (title) {
                 event.host = host
                 event.attendees = attendees
@@ -360,14 +309,7 @@ $(document).ready(function () {
                 event.note = note
                 $("#calendar").fullCalendar('updateEvent', event);
                 //edit sql
-
-                fetch(addevent, {
-                        method: 'PUT',
-                        mode: 'cors',
-                        body: JSON.stringify(eventData)
-                    })
-                    .then(res => res.text())
-                    .then(res => console.log(res))
+                fetchandAlert(updateEventURL + event.id,'PUT', updateObj);
 
             } else {
                 alert("Title can't be blank. Please try again.")
