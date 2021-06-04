@@ -2,6 +2,7 @@ var newEvent;
 var editEvent;
 
 $(document).ready(function () {
+
     var calendar = $('#calendar').fullCalendar({
 
         eventRender: function (event, element, view) {
@@ -19,7 +20,7 @@ $(document).ready(function () {
                 content: '<div class="popoverInfoCalendar">' +
                     '<p><strong>主席:</strong> ' + event.host + '</p>' +
                     '<p><strong>會議時間:</strong> ' + displayEventDate + '</p>' +
-                    '<div class="popoverDescCalendar"><strong>內容:</strong> ' + event.description + '</div>' +
+                    '<div class="popoverDescCalendar"><strong>內容:</strong> ' + event.note + '</div>' +
                     '</div>',
                 delay: {
                     show: "800",
@@ -123,7 +124,7 @@ $(document).ready(function () {
             var $contextMenu = $("#contextMenu");
 
             var HTMLContent = '<ul class="dropdown-menu dropNewEvent" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">' +
-                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Appointment" + '")\'> <a tabindex="-1" href="#">新增活動</a></li>' +            
+                '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Appointment" + '")\'> <a tabindex="-1" href="#">新增活動</a></li>' +
                 '<li class="divider"></li>' +
                 '<li><a tabindex="-1" href="#">關閉</a></li>' +
                 '</ul>';
@@ -157,7 +158,7 @@ $(document).ready(function () {
 
         },
         eventClick: function (event, jsEvent, view) {
-            
+
             editEvent(event);
 
         },
@@ -173,7 +174,7 @@ $(document).ready(function () {
         eventLimit: true,
         eventLimitClick: 'week', //popover
         navLinks: true,
-        defaultDate: '2018-03-07',
+        defaultDate: '2021-05-21',
         timeFormat: 'HH:mm',
         defaultTimedEventDuration: '01:00:00',
         editable: true,
@@ -186,61 +187,70 @@ $(document).ready(function () {
         longPressDelay: 0,
         eventLongPressDelay: 0,
         selectLongPressDelay: 0,
+        events: {
+            url: getEvents,            
+            success: function(res) {    
+                let arrl = [];                             
+                res.forEach(function(val){
+                    arrl.push({"title":val.eTitle,"id":val.id,"start":moment(val.startDay).utc().format('YYYY-MM-DD HH:mm:ss').toString(),              
+                    "end":moment(val.endDay).utc().format('YYYY-MM-DD HH:mm:ss').toString(), "note":val.note,"host":val.host, "attendees":val.attendees,"className":'colorViewing'            
+                    })    
+                });                
+                return arrl; 
+            }
+        }
+        // events: [{
+            // id: 11,
+            // title: 'Michigan University',
+            // note: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
+            // start: '2021-05-22 09:30',
+            // end: '2021-05-22 10:00',
+            // host: 'Caio Vitorelli',
+            // attendees:'Beauty',
+            // className: 'colorViewing'
+        // }, {
+        //     _id: 12,
+        //     title: 'California Polytechnic',
+        //     description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
+        //     start: '2018-03-01T12:30',
+        //     end: '2018-03-01T15:30',
+        //     host: 'Adam Rackham',
+        //     attendees:'Beast',
+        //     className: 'colorViewing',
 
-        events: [{
-            _id: 11,
-            title: 'Michigan University',
-            description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-            start: '2018-03-07T09:30',
-            end: '2018-03-07T10:00',
-            host: 'Caio Vitorelli',
-            attendees:'Beauty',
-            className: 'colorViewing',
-            
-        }, {
-            _id: 12,
-            title: 'California Polytechnic',
-            description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-            start: '2018-03-01T12:30',
-            end: '2018-03-01T15:30',
-            host: 'Adam Rackham',
-            attendees:'Beast',
-            className: 'colorViewing',
-           
-        }, {
-            _id: 13,
-            title: 'Michigan University',
-            description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-            start: '2018-03-03 09:30',
-            end: '2018-03-03 10:00',
-            host: 'Caio Vitorelli',
-            attendees:'Beauty',
-            className: 'colorViewing',
-            
-        }, {
-            _id: 14,
-            title: 'Vermont University',
-            description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
-            start: '2018-03-06 09:30',
-            end: '2018-03-06 12:00',
-            attendees:'Tree',
-            className: 'colorViewing',
-            host: 'Peter Grant'            
-            
-        }]
+        // }, {
+        //     _id: 13,
+        //     title: 'Michigan University',
+        //     description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
+        //     start: '2018-03-03 09:30',
+        //     end: '2018-03-03 10:00',
+        //     host: 'Caio Vitorelli',
+        //     attendees:'Beauty',
+        //     className: 'colorViewing',
+
+        // }, {
+        //     _id: 14,
+        //     title: 'Vermont University',
+        //     description: 'Lorem ipsum dolor sit incid idunt ut Lorem ipsum sit.',
+        //     start: '2018-03-06 09:30',
+        //     end: '2018-03-06 12:00',
+        //     attendees:'Tree',
+        //     className: 'colorViewing',
+        //     host: 'Peter Grant'            
+        // }]
 
     });
 
     $("#starts-at, #ends-at").datetimepicker({
         format: 'YYYY-MM-DD HH:mm',
-        locale:"zh-tw"
+        locale: "zh-tw"
     });
 
     //var minDate = moment().subtract(0, 'days').millisecond(0).second(0).minute(0).hour(0);
 
     $(" #editStartDate, #editEndDate").datetimepicker({
         format: 'YYYY-MM-DD HH:mm',
-        locale:"zh-tw"
+        locale: "zh-tw"
         //minDate: minDate
     });
 
@@ -280,19 +290,23 @@ $(document).ready(function () {
             var startDay = $('#starts-at').val();
             //Wed 28 Feb 2018 13:46
             var endDay = $('#ends-at').val();
-            var description = $('#add-event-desc').val();
+            if(startDay > endDay) {
+                $('#starts-at').val("開始時間晚於結束時間，請重新輸入！");
+                return;
+            }
+            var note = $('#add-event-desc').val();
             if (title) {
                 var eventData = {
                     title: title,
                     start: startDay,
                     end: endDay,
-                    attendees:attendees,
-                    description: description,
+                    attendees: attendees,
+                    note: note,
                     host: 'Doran'
                 };
-                fetch( addevent, {                        
+                fetch(addEvent, {
                         method: 'POST',
-                        mode: 'cors', 
+                        mode: 'cors',
                         body: JSON.stringify(eventData)
                     })
                     .then(res => res.text())
@@ -324,17 +338,17 @@ $(document).ready(function () {
         $('#editTitle').val(event.title);
         $('#editStartDate').val(event.start.format('YYYY-MM-DD HH:mm'));
         $('#editEndDate').val(event.end.format('YYYY-MM-DD HH:mm'));
-        $('#edit-event-desc').val(event.description);
+        $('#edit-event-desc').val(event.note);
         $('.eventName').text(event.title);
         $('#editEventModal').modal('show');
         $('#updateEvent').unbind();
         $('#updateEvent').on('click', function () {
             var host = $('input#editHost').val();
-            var attendees = $('input#attendees').val();
+            var attendees = $('input#editAttendees').val();
             var title = $('input#editTitle').val();
             var startDate = $('input#editStartDate').val();
             var endDate = $('input#editEndDate').val();
-            var description = $('#edit-event-desc').val();
+            var note = $('#edit-event-desc').val();
             $('#editEventModal').modal('hide');
             var eventData;
             if (title) {
@@ -343,17 +357,17 @@ $(document).ready(function () {
                 event.title = title
                 event.start = startDate
                 event.end = endDate
-                event.description = description
+                event.note = note
                 $("#calendar").fullCalendar('updateEvent', event);
                 //edit sql
 
-                fetch( addevent + '', {                        
-                    method: 'PUT',
-                    mode: 'cors', 
-                    body: JSON.stringify(eventData)
-                })
-                .then(res => res.text())
-                .then(res => console.log(res))
+                fetch(addevent, {
+                        method: 'PUT',
+                        mode: 'cors',
+                        body: JSON.stringify(eventData)
+                    })
+                    .then(res => res.text())
+                    .then(res => console.log(res))
 
             } else {
                 alert("Title can't be blank. Please try again.")
