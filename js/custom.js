@@ -2,8 +2,9 @@ var newEvent;
 var editEvent;
 
 $(document).ready(function () {
+
     function fetchandAlert(url, method, obj) {
-        fetch(url , {
+        fetch(url, {
                 method: method,
                 mode: 'cors',
                 body: JSON.stringify(obj)
@@ -18,34 +19,35 @@ $(document).ready(function () {
                 }, 100)
             })
     }
-    //get rooms
-    $.ajax({
-        url: getRooms,
-        type: 'GET',
-        datatype: 'json'
-    })
-    .done( data =>  
-        $.each(data, function (key, value) {
-            $('#getRooms')
-                .append($("<option></option>")
-                    .attr("value", value.RomeId)
-                    .text(value.Name));
-        })
-    )
-    .fail(function (jqXHR, textStatus, errorThrown) {console.log(textStatus) });
-    
+
+    function getRoomlist() {
+        $.ajax({
+                url: getRooms,
+                type: 'GET',
+                datatype: 'json'
+            })
+            .done(data =>
+                $.each(data, function (key, value) {
+                    $('#getRooms, #getRoomsEdit')
+                        .append($("<option></option>")
+                            .attr("value", value.RomeId)
+                            .text(value.Name));
+                })
+            ).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus)
+            });
+    }
+    getRoomlist();
     var calendar = $('#calendar').fullCalendar({
-        
+
         eventRender: function (event, element, view) {
 
             var startTimeEventInfo = moment(event.start).format('HH:mm');
             var endTimeEventInfo = moment(event.end).format('HH:mm');
             var displayEventDate;
 
-            element.find(".fc-content").css('padding-left', '55px');
-            element.find(".fc-content").after($("<div class=\"fc-avatar-image\"></div>").html('<img src="image/group.png" />'));
-
-
+            // element.find(".fc-content").css('padding-left', '55px');
+            // element.find(".fc-content").after($("<div class=\"fc-avatar-image\"></div>").html('<img src="image/group.png" />'));
             displayEventDate = startTimeEventInfo + " - " + endTimeEventInfo;
             element.popover({
                 title: '<div class="popoverTitleCalendar" style="background-color:#47acdf' + '; color:#ffffff">' + event.title + '</div>',
@@ -55,7 +57,7 @@ $(document).ready(function () {
                     '<div class="popoverDescCalendar"><strong>內容:</strong> ' + event.note + '</div>' +
                     '</div>',
                 delay: {
-                    show: "800",
+                    show: "200",
                     hide: "50"
                 },
                 trigger: 'hover',
@@ -112,11 +114,19 @@ $(document).ready(function () {
             draggedEventIsAllDay = event.allDay;
         },
         eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
-            let updateObj = {"host":event.host,"attendees":event.attendees,"title":event.title,"start":event.start.format('YYYY-MM-DD HH:mm'),"end":event.end.format('YYYY-MM-DD HH:mm'),"note":event.note, "timeId": moment().format('YYYY-MM-DD HH:mm:ss')}
+            let updateObj = {
+                "host": event.host,
+                "attendees": event.attendees,
+                "title": event.title,
+                "roomId": event.id,
+                "start": event.start.format('YYYY-MM-DD HH:mm'),
+                "end": event.end.format('YYYY-MM-DD HH:mm'),
+                "note": event.note,
+                "timeId": moment().format('YYYY-MM-DD HH:mm:ss')
+            }
             fetchandAlert(updateEventURL + event.id, "PUT", updateObj);
         },
-        unselect: function (jsEvent, view) {
-        },
+        unselect: function (jsEvent, view) {},
         select: function (startDate, endDate, jsEvent, view) {
 
             var today = moment();
@@ -146,10 +156,9 @@ $(document).ready(function () {
                 '<li class="divider"></li>' +
                 '<li><a tabindex="-1" href="#">關閉</a></li>' +
                 '</ul>';
-
             $(".fc-body").unbind('click');
-            $(".fc-body").on('click', 'td', function (e) {
-
+            $(".fc-body:not(.fc-event-container)").on('click', 'td', function (e) {
+                e.preventDefault();
                 document.getElementById('contextMenu').innerHTML = (HTMLContent);
                 $contextMenu.addClass("contextOpened");
                 $contextMenu.css({
@@ -159,7 +168,7 @@ $(document).ready(function () {
                 });
                 return false;
             });
-                   
+
             $contextMenu.on("click", "a", function (e) {
                 e.preventDefault();
                 $contextMenu.removeClass("contextOpened");
@@ -205,17 +214,25 @@ $(document).ready(function () {
         eventLongPressDelay: 0,
         selectLongPressDelay: 0,
         events: {
-            url: getEventsURL,            
-            success: function(res) {    
-                let arrl = [];                             
-                res.forEach(function(val){
-                    arrl.push({"title":val.eTitle,"id":val.id,"start":moment(val.startDay).utc().format('YYYY-MM-DD HH:mm:ss').toString(),              
-                    "end":moment(val.endDay).utc().format('YYYY-MM-DD HH:mm:ss').toString(), "note":val.note,"host":val.host, "attendees":val.attendees,"className":'colorViewing'            
-                    })    
-                });                
-                return arrl; 
+            url: getEventsURL,
+            success: function (res) {
+                let arrl = [];
+                res.forEach(function (val) {
+                    arrl.push({
+                        "title": val.eTitle,
+                        "id": val.id,
+                        "start": moment(val.startDay).utc().format('YYYY-MM-DD HH:mm:ss').toString(),
+                        "end": moment(val.endDay).utc().format('YYYY-MM-DD HH:mm:ss').toString(),
+                        "note": val.note,
+                        "host": val.host,
+                        "attendees": val.attendees,
+                        "roomId": val.roomId,
+                        "className": 'colorViewing'
+                    })
+                });
+                return arrl;
             }
-        }    
+        }
     });
 
     $("#starts-at, #ends-at").datetimepicker({
@@ -254,14 +271,20 @@ $(document).ready(function () {
             var host = $('input#host').val();
             var title = $('input#title').val();
             var attendees = $('input#attendees').val();
+            var roomId = $('#getRooms option').filter(':selected').val();
             var startDay = $('#starts-at').val();
             //Wed 28 Feb 2018 13:46
             var endDay = $('#ends-at').val();
-            if(startDay > endDay) {
+            if (startDay > endDay) {
                 $('#starts-at').val("開始時間晚於結束時間，請重新輸入！");
                 return;
             }
             var note = $('#add-event-desc').val();
+            //驗證
+            if(host ==""){alert("請輸入主席名稱！");return;}
+            if(title ==""){alert("請輸入會議名稱！");return;}
+            
+
             if (title) {
                 var eventData = {
                     title: title,
@@ -270,9 +293,10 @@ $(document).ready(function () {
                     attendees: attendees,
                     timeId: moment().format('YYYY-MM-DD HH:mm:ss'),
                     note: note,
+                    roomId: roomId,
                     host: host
                 };
-                fetchandAlert(addEventURL,'POST', eventData)
+                fetchandAlert(addEventURL, 'POST', eventData)
 
                 $("#calendar").fullCalendar('renderEvent', eventData, true);
                 $('#newEventModal').find('input, textarea').val('');
@@ -280,7 +304,7 @@ $(document).ready(function () {
                 $('#ends-at').prop('disabled', false);
                 $('#newEventModal').modal('hide');
             } else {
-                alert("Title can't be blank. Please try again.")
+                alert("主席請填入！")
             }
         });
     }
@@ -291,49 +315,60 @@ $(document).ready(function () {
 
         $('.popover.fade.top').remove();
         $(element).popover("hide");
-
         //$(".dropdown").hide().css("visibility", "hidden");
-
         $('#editHost').val(event.host);
         $('#editAttendees').val(event.attendees);
+        $('#getRoomsEdit option[value=' + event.roomId + ']').prop("selected", true);
         $('#editTitle').val(event.title);
         $('#editStartDate').val(event.start.format('YYYY-MM-DD HH:mm'));
         $('#editEndDate').val(event.end.format('YYYY-MM-DD HH:mm'));
         $('#edit-event-desc').val(event.note);
-        $('.eventName').text(":"+event.title);
+        $('.eventName').text(":" + event.title);
         $('#editEventModal').modal('show');
         $('#updateEvent').unbind();
         $('#updateEvent').on('click', function () {
-
+            if(host ==""){alert("請輸入主席名稱！");return;}
+            if(title ==""){alert("請輸入會議名稱！");return;}
+            if (startDate > endDate) {
+                $('#editStartDate').val("開始時間晚於結束時間，請重新輸入！");
+                return;
+            }
             var host = $('input#editHost').val();
             var attendees = $('input#editAttendees').val();
+            var roomId = $('#getRoomsEdit option').filter(':selected').val();
             var title = $('input#editTitle').val();
             var startDate = $('input#editStartDate').val();
             var endDate = $('input#editEndDate').val();
             var note = $('#edit-event-desc').val();
-            if(startDate > endDate) {
-                $('#editStartDate').val("開始時間晚於結束時間，請重新輸入！");
-                return;
-            }
+
             $('#editEventModal').modal('hide');
             var eventData;
-            var updateObj = {"host":host,"attendees":attendees,"title":title,"start":startDate,
-            "end":endDate,"note":note, "timeId": moment().format('YYYY-MM-DD HH:mm:ss')
-        };
+            var updateObj = {
+                "host": host,
+                "attendees": attendees,
+                "roomId": roomId,
+                "title": title,
+                "start": startDate,
+                "end": endDate,
+                "note": note,
+                "timeId": moment().format('YYYY-MM-DD HH:mm:ss')
+            };
 
             if (title) {
+
                 event.host = host
+                event.roomId = roomId
                 event.attendees = attendees
                 event.title = title
                 event.start = startDate
                 event.end = endDate
                 event.note = note
                 $("#calendar").fullCalendar('updateEvent', event);
-                //edit sql
-                fetchandAlert(updateEventURL + event.id,'PUT', updateObj);
+
+                fetchandAlert(updateEventURL + event.id, 'PUT', updateObj);
 
             } else {
-                alert("Title can't be blank. Please try again.")
+                alert("主席請填入！")
             }
         });
 

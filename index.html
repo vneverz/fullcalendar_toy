@@ -62,19 +62,19 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <label class="col-xs-4" for="title">*主席</label>
-                            <input class="inputModal" type="text" name="host" id="host" />
+                            <input class="inputModal" type="text" name="host" id="host" required />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
                             <label class="col-xs-4" for="title">*會議主題</label>
-                            <input class="inputModal" type="text" name="title" id="title" />
+                            <input class="inputModal" type="text" name="title" id="title" required />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
                             <label class="col-xs-4" for="title">*會議室</label>
-                            <select class="inputModal" aria-label="Default select" id="getRooms">
+                            <select class="inputModal" aria-label="Default select" id="getRooms" required >
                             </select>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <label class="col-xs-4" for="title">*主席</label>
-                            <input class="inputModal" type="text" name="editHost" id="editHost" />
+                            <input class="inputModal" type="text" name="editHost" id="editHost" required/>
                         </div>
                     </div>
 
@@ -139,7 +139,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <label class="col-xs-4" for="title">*會議室</label>
-                            <select class="inputModal" aria-label="Default select" id="getRooms">
+                            <select class="inputModal" aria-label="Default select" id="getRoomsEdit">
                             </select>
                         </div>
                     </div>
@@ -191,6 +191,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/locale-all.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js">
     </script>
