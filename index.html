@@ -21,7 +21,7 @@
     <div class="row">
         <div id="openviewWeather">
             <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/24d99121d30/taoyuan-city/" data-label_1="桃園市"
-                data-label_2="天氣" data-font="微軟正黑體 (Microsoft JhengHei)" data-icons="Climacons Animated"
+                data-label_2="天氣" data-font="微軟正黑體 (Microsoft JhengHei)" data-icons="Climacons Animated" 
                 data-theme="pure" data-accent="rgba(1, 1, 1, 0.0)"></a>
         </div>
     </div>
@@ -57,7 +57,7 @@
                             aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">新增 <span class="eventType"></span></h4>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body show-wind">
 
                     <div class="row">
                         <div class="col-xs-12">
@@ -69,6 +69,13 @@
                         <div class="col-xs-12">
                             <label class="col-xs-4" for="title">*會議主題</label>
                             <input class="inputModal" type="text" name="title" id="title" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label class="col-xs-4" for="title">*會議室</label>
+                            <select class="inputModal" aria-label="Default select" id="getRooms">
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -115,7 +122,7 @@
                             aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">更改 <span class="eventName"></span></h4>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body show-wind">
                     <div class="row">
                         <div class="col-xs-12">
                             <label class="col-xs-4" for="title">*主席</label>
@@ -129,6 +136,14 @@
                             <input class="inputModal" type="text" name="editTitle" id="editTitle" />
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label class="col-xs-4" for="title">*會議室</label>
+                            <select class="inputModal" aria-label="Default select" id="getRooms">
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-xs-12">
                             <label class="col-xs-4" for="title">&nbsp;與會者</label>
@@ -166,7 +181,7 @@
     </div><!-- /.modal -->
     <!-- ALERT EVENT MODAL -->
     <div class="alert alert-success" id="alertbox" role="alert">
-        <strong>太棒啦！</strong><span id="insavetext"></span>
+        <strong>太棒了！</strong><span id="insavetext"></span>
       </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCit4RJVPT9UiLQCJJPYEBkNTJCslqO4ps&libraries=places">
     </script>

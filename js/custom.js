@@ -2,7 +2,6 @@ var newEvent;
 var editEvent;
 
 $(document).ready(function () {
-
     function fetchandAlert(url, method, obj) {
         fetch(url , {
                 method: method,
@@ -19,9 +18,24 @@ $(document).ready(function () {
                 }, 100)
             })
     }
-
+    //get rooms
+    $.ajax({
+        url: getRooms,
+        type: 'GET',
+        datatype: 'json'
+    })
+    .done( data =>  
+        $.each(data, function (key, value) {
+            $('#getRooms')
+                .append($("<option></option>")
+                    .attr("value", value.RomeId)
+                    .text(value.Name));
+        })
+    )
+    .fail(function (jqXHR, textStatus, errorThrown) {console.log(textStatus) });
+    
     var calendar = $('#calendar').fullCalendar({
-
+        
         eventRender: function (event, element, view) {
 
             var startTimeEventInfo = moment(event.start).format('HH:mm');
@@ -30,6 +44,7 @@ $(document).ready(function () {
 
             element.find(".fc-content").css('padding-left', '55px');
             element.find(".fc-content").after($("<div class=\"fc-avatar-image\"></div>").html('<img src="image/group.png" />'));
+
 
             displayEventDate = startTimeEventInfo + " - " + endTimeEventInfo;
             element.popover({
@@ -126,8 +141,7 @@ $(document).ready(function () {
             }
 
             var $contextMenu = $("#contextMenu");
-
-            var HTMLContent = '<ul class="dropdown-menu dropNewEvent" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">' +
+            var HTMLContent = '<ul class="dropdown-menu dropNewEvent" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;font-size:1.6rem;">' +
                 '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Appointment" + '")\'> <a tabindex="-1" href="#">新增活動</a></li>' +
                 '<li class="divider"></li>' +
                 '<li><a tabindex="-1" href="#">關閉</a></li>' +
@@ -145,7 +159,7 @@ $(document).ready(function () {
                 });
                 return false;
             });
-
+                   
             $contextMenu.on("click", "a", function (e) {
                 e.preventDefault();
                 $contextMenu.removeClass("contextOpened");
@@ -181,7 +195,7 @@ $(document).ready(function () {
         timeFormat: 'HH:mm',
         defaultTimedEventDuration: '01:00:00',
         editable: true,
-        minTime: '07:00:00',
+        minTime: '08:30:00',
         maxTime: '18:00:00',
         slotLabelFormat: 'HH:mm',
         weekends: true,
@@ -206,13 +220,15 @@ $(document).ready(function () {
 
     $("#starts-at, #ends-at").datetimepicker({
         format: 'YYYY-MM-DD HH:mm',
-        locale: "zh-tw"
+        locale: "zh-tw",
+        stepping: 30,
+        enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
     });
-    //var minDate = moment().subtract(0, 'days').millisecond(0).second(0).minute(0).hour(0);
     $(" #editStartDate, #editEndDate").datetimepicker({
         format: 'YYYY-MM-DD HH:mm',
-        locale: "zh-tw"
-        //minDate: minDate
+        locale: "zh-tw",
+        stepping: 30,
+        enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
     });
 
     //CREATE NEW EVENT CALENDAR

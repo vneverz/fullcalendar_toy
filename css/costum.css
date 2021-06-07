@@ -8,3 +8,13 @@
   right: 1.5rem;
   z-index: 1;
 }
+#wrapper {
+  font-size: 1.6rem;
+}
+.fc-title {
+  font-size: 1.8rem;
+}
+.show-wind {
+  font-size: 1.5rem;
+  color: rgb(99 96 96);
+}
