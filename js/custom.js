@@ -2,7 +2,16 @@ var newEvent;
 var editEvent;
 
 $(document).ready(function () {
-
+    const roomcolors = {
+        1: "#54478c",               
+        2:"#2c699a",
+        3:"#048ba8",
+        6:"#0db39e",
+        9:"#16db93",
+        10:"#db3a34",
+        11:"#da627d",
+        13: "#a53860"
+    }
     function validateTxt(txt) {
         //至少
         var re = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
@@ -161,39 +170,8 @@ $(document).ready(function () {
                 startDate = moment(startDate).format('YYYY-MM-DD HH:mm');
                 endDate = moment(endDate).format('YYYY-MM-DD HH:mm');
             }
-            const roomcolorlist = [{
-                    id: 1,
-                    color: "Nina Ricci",
-                },
-                {
-                    id: 2,
-                    color: "Hello Kitty",
-                },
-                {
-                    id: 3,
-                    color: "Pusheen the cat",
-                },
-                {
-                    id: 6,
-                    color: "Nina Ricci",
-                },
-                {
-                    id: 9,
-                    color: "Hello Kitty",
-                },
-                {
-                    id: 10,
-                    color: "Pusheen the cat",
-                },
-                {
-                    id: 11,
-                    color: "Pusheen the cat",
-                },
-                {
-                    id: 13,
-                    color: "Pusheen the cat",
-                }
-            ];
+
+
             var $contextMenu = $("#contextMenu");
             var HTMLContent = '<ul class="dropdown-menu dropNewEvent" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;font-size:1.6rem;">' +
                 '<li onclick=\'newEvent("' + startDate + '","' + endDate + '","' + "Appointment" + '")\'> <a tabindex="-1" href="#">新增活動</a></li>' +
@@ -271,7 +249,7 @@ $(document).ready(function () {
                         "host": val.host,
                         "attendees": val.attendees,
                         "roomId": val.roomId,
-                        "backgroundColor": "#47acdf",
+                        "backgroundColor": roomcolors[val.roomId],
                         "className": 'colorViewing'
                     })
                 });
