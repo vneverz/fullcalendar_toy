@@ -34,7 +34,7 @@ $(document).ready(function () {
                 $("#pre-text").text(txt);
                 $("#insavetext").text(res);
                 window.setTimeout(function () {
-                    $("#alertbox").fadeIn(1000, 'linear').fadeOut(2500, function () {
+                    $("#alertbox").fadeIn(800, 'linear').fadeOut(1800, function () {
                         $(this).hide();
                     });
                 }, 100)
@@ -60,29 +60,6 @@ $(document).ready(function () {
     }
     getRoomlist();
 
-    function isAnOverlapEvent(event) {
-        var result;
-        $.ajax({
-                url: isoverlap,
-                type: 'GET',
-                data: {
-                    roomId: event.roomId,
-                    monst: moment(event.start).startOf('month').format('YYYY-MM-DD hh:mm'),
-                    monEd: moment(event.end).endOf('month').format('YYYY-MM-DD hh:mm'),
-                    newSt: event.start,
-                    newEn: event.end
-                },
-                datatype: 'json',
-                async: false
-            })
-            .done(data => {
-                result = data;
-                
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(textStatus)
-            });
-        return result;
-    }
     var calendar = $('#calendar').fullCalendar({
 
         eventRender: function (event, element, view) {
@@ -155,21 +132,42 @@ $(document).ready(function () {
             $('.popover.fade.top').remove();
         },
         eventDragStart: function (event, jsEvent, ui, view) {
-            var draggedEventIsAllDay;
-            draggedEventIsAllDay = event.allDay;
+            // var draggedEventIsAllDay;
+            // draggedEventIsAllDay = event.allDay;
         },
         eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
             let updateObj = {
                 "host": event.host,
                 "attendees": event.attendees,
                 "title": event.title,
-                "roomId": event.id,
+                "roomId": event.roomId,
                 "start": event.start.format('YYYY-MM-DD HH:mm'),
                 "end": event.end.format('YYYY-MM-DD HH:mm'),
                 "note": event.note,
                 "timeId": moment().format('YYYY-MM-DD HH:mm:ss')
             }
-            // fetchandAlert(updateEventURL + event.id, "PUT", updateObj, "太好了!");
+            fetch(isoverlap +'?'+ new URLSearchParams({
+                roomId: event.roomId,
+                monst: moment(event.start).add(-1,'days').format('YYYY-MM-DD hh:mm'),
+                monEd: moment(event.end).add(1,'days').format('YYYY-MM-DD hh:mm'),
+                newSt: event.start.format('YYYY-MM-DD HH:mm'),
+                newEn: event.end.format('YYYY-MM-DD HH:mm')
+            }), {
+                method: 'GET',
+                mode: 'cors',
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                  })
+            })
+            .then(res => res.text())
+            .then(res => {
+                if(res === "True"){
+                    alert("衝突");               
+                    revertFunc();
+                } else {
+                    fetchandAlert(updateEventURL + event.id, "PUT", updateObj, "太好了!");
+                }   
+            })                               
         },
         unselect: function (jsEvent, view) {},
         select: function (startDate, endDate, jsEvent, view) {
@@ -259,7 +257,6 @@ $(document).ready(function () {
         longPressDelay: 0,
         eventLongPressDelay: 0,
         selectLongPressDelay: 0,
-        eventOverlap: false,
         events: {
             url: getEventsURL,
             success: function (res) {
@@ -274,7 +271,6 @@ $(document).ready(function () {
                         "host": val.host,
                         "attendees": val.attendees,
                         "roomId": val.roomId,
-                        "overlap": false,
                         "backgroundColor": roomcolors[val.roomId],
                         "className": 'colorViewing'
                     })
@@ -349,12 +345,12 @@ $(document).ready(function () {
             };
 
             if(isAnOverlapEvent(eventData) === "True"){
-                $('.showTxt').fadeIn(200).delay(1200).fadeOut(200);                
+                $('#newEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);                
                 return;
             }
-
-            // fetchandAlert(addEventURL, 'POST', eventData,"太棒了!");
-
+            
+            fetchandAlert(addEventURL, 'POST', eventData,"太棒了!");
+                        
             $("#calendar").fullCalendar('renderEvent', eventData, true);
             $('#newEventModal').find('input, textarea').val('');
             $('#newEventModal').find('input:checkbox').prop('checked', false);
@@ -393,8 +389,6 @@ $(document).ready(function () {
                 alert("必填未填或輸入含特殊符號請修正!");
                 return;
             }
-
-            $('#editEventModal').modal('hide');
             var eventData;
             var updateObj = {
                 "host": host,
@@ -416,8 +410,33 @@ $(document).ready(function () {
             event.end = endDate
             event.note = note
 
+            $.ajax({
+                url: isoverlapId+event.id,
+                type: 'GET',
+                data: {
+                    roomId: event.roomId,
+                    monst: moment(event.start).add(-1,'days').format('YYYY-MM-DD hh:mm'),
+                    monEd: moment(event.end).add(1,'days').format('YYYY-MM-DD hh:mm'),
+                    newSt: event.start,
+                    newEn: event.end
+                },
+                datatype: 'json',
+                async: false
+            })
+            .done(data => { 
+                if(data === "True") {
+                    $('#editEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);                
+                    return;
+                } else {
+                    fetchandAlert(updateEventURL + event.id, 'PUT', updateObj, "完成!"); 
+                }              
+            
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus)
+            }); 
+            
+            $('#editEventModal').modal('hide');
             $("#calendar").fullCalendar('updateEvent', event);
-            // fetchandAlert(updateEventURL + event.id, 'PUT', updateObj, "完成!");
         });
 
         $('#deleteEvent').on('click', function () {
