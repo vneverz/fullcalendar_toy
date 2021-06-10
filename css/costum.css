@@ -18,3 +18,9 @@
   font-size: 1.5rem;
   color: rgb(99 96 96);
 }
+.showTxt{
+  display: none;
+  font-size: 18px;
+  color: brown;
+  text-align:center;
+}

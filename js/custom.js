@@ -3,15 +3,16 @@ var editEvent;
 
 $(document).ready(function () {
     const roomcolors = {
-        1: "#54478c",               
-        2:"#2c699a",
-        3:"#048ba8",
-        6:"#0db39e",
-        9:"#16db93",
-        10:"#db3a34",
-        11:"#da627d",
+        1: "#54478c",
+        2: "#2c699a",
+        3: "#048ba8",
+        6: "#0db39e",
+        9: "#16db93",
+        10: "#db3a34",
+        11: "#da627d",
         13: "#a53860"
     }
+
     function validateTxt(txt) {
         //至少
         var re = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
@@ -59,6 +60,29 @@ $(document).ready(function () {
     }
     getRoomlist();
 
+    function isAnOverlapEvent(event) {
+        var result;
+        $.ajax({
+                url: isoverlap,
+                type: 'GET',
+                data: {
+                    roomId: event.roomId,
+                    monst: moment(event.start).startOf('month').format('YYYY-MM-DD hh:mm'),
+                    monEd: moment(event.end).endOf('month').format('YYYY-MM-DD hh:mm'),
+                    newSt: event.start,
+                    newEn: event.end
+                },
+                datatype: 'json',
+                async: false
+            })
+            .done(data => {
+                result = data;
+                
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus)
+            });
+        return result;
+    }
     var calendar = $('#calendar').fullCalendar({
 
         eventRender: function (event, element, view) {
@@ -145,7 +169,7 @@ $(document).ready(function () {
                 "note": event.note,
                 "timeId": moment().format('YYYY-MM-DD HH:mm:ss')
             }
-            fetchandAlert(updateEventURL + event.id, "PUT", updateObj, "太好了!");
+            // fetchandAlert(updateEventURL + event.id, "PUT", updateObj, "太好了!");
         },
         unselect: function (jsEvent, view) {},
         select: function (startDate, endDate, jsEvent, view) {
@@ -235,6 +259,7 @@ $(document).ready(function () {
         longPressDelay: 0,
         eventLongPressDelay: 0,
         selectLongPressDelay: 0,
+        eventOverlap: false,
         events: {
             url: getEventsURL,
             success: function (res) {
@@ -249,6 +274,7 @@ $(document).ready(function () {
                         "host": val.host,
                         "attendees": val.attendees,
                         "roomId": val.roomId,
+                        "overlap": false,
                         "backgroundColor": roomcolors[val.roomId],
                         "className": 'colorViewing'
                     })
@@ -298,6 +324,7 @@ $(document).ready(function () {
             //Wed 28 Feb 2018 13:46
             var endDay = $('#ends-at').val();
             var note = $('#add-event-desc').val().trim();
+
             //驗證
             if (startDay > endDay) {
                 $('#starts-at').val("開始時間晚於結束時間，請重新輸入！");
@@ -316,8 +343,16 @@ $(document).ready(function () {
                 timeId: moment().format('YYYY-MM-DD HH:mm:ss'),
                 note: note,
                 roomId: roomId,
-                host: host
+                backgroundColor: roomcolors[roomId],
+                host: host,
+                className: 'colorViewing'
             };
+
+            if(isAnOverlapEvent(eventData) === "True"){
+                $('.showTxt').fadeIn(200).delay(1200).fadeOut(200);                
+                return;
+            }
+
             // fetchandAlert(addEventURL, 'POST', eventData,"太棒了!");
 
             $("#calendar").fullCalendar('renderEvent', eventData, true);
@@ -374,13 +409,15 @@ $(document).ready(function () {
 
             event.host = host
             event.roomId = roomId
+            event.backgroundColor = roomcolors[roomId]
             event.attendees = attendees
             event.title = title
             event.start = startDate
             event.end = endDate
             event.note = note
+
             $("#calendar").fullCalendar('updateEvent', event);
-            fetchandAlert(updateEventURL + event.id, 'PUT', updateObj, "完成!");
+            // fetchandAlert(updateEventURL + event.id, 'PUT', updateObj, "完成!");
         });
 
         $('#deleteEvent').on('click', function () {
