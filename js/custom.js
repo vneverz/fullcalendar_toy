@@ -3,15 +3,22 @@ var editEvent;
 
 $(document).ready(function () {
     const roomcolors = {
-        1: "#54478c",
-        2: "#2c699a",
+        1: "#3a86ff",
+        2: "#8338ec",
         3: "#048ba8",
         6: "#0db39e",
-        9: "#16db93",
+        9: "#e76f51",
         10: "#db3a34",
         11: "#da627d",
         13: "#a53860"
     }
+    function getyesandtom(st,en){
+        let monSt = moment(st).add(-1,'days').format('YYYY-MM-DD hh:mm');
+        let monEd = moment(en).add(1,'days').format('YYYY-MM-DD hh:mm');
+        let arr = [monSt,monEd];
+        return arr;
+    }
+
 
     function validateTxt(txt) {
         //至少
@@ -34,7 +41,7 @@ $(document).ready(function () {
                 $("#pre-text").text(txt);
                 $("#insavetext").text(res);
                 window.setTimeout(function () {
-                    $("#alertbox").fadeIn(800, 'linear').fadeOut(1800, function () {
+                    $("#alertbox").fadeIn(500, 'linear').fadeOut(1800, function () {
                         $(this).hide();
                     });
                 }, 100)
@@ -146,26 +153,33 @@ $(document).ready(function () {
                 "note": event.note,
                 "timeId": moment().format('YYYY-MM-DD HH:mm:ss')
             }
-            fetch(isoverlap +'?'+ new URLSearchParams({
+            let arEdit = getyesandtom(event.start,event.end);
+
+            fetch(isoverlapId + event.id  +'?'+ new URLSearchParams({
                 roomId: event.roomId,
-                monst: moment(event.start).add(-1,'days').format('YYYY-MM-DD hh:mm'),
-                monEd: moment(event.end).add(1,'days').format('YYYY-MM-DD hh:mm'),
-                newSt: event.start.format('YYYY-MM-DD HH:mm'),
-                newEn: event.end.format('YYYY-MM-DD HH:mm')
+                monSt: arEdit[0],
+                monEd: arEdit[1],
+                newSt: updateObj.start,
+                newEn: updateObj.end
             }), {
                 method: 'GET',
-                mode: 'cors',
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                  })
+                mode: 'cors'
             })
             .then(res => res.text())
             .then(res => {
                 if(res === "True"){
-                    alert("衝突");               
+                    window.setTimeout(function () {
+                        $('#alertbox').removeClass('alert-success');
+                        $('#alertbox').addClass('alert-danger');
+                        $("#pre-text").text("喔哦～");
+                        $("#insavetext").text("時間相衝了😮");
+                        $("#alertbox").fadeIn(500, 'linear').fadeOut(1800, function () {
+                            $(this).hide();
+                        });
+                    }, 100)               
                     revertFunc();
                 } else {
-                    fetchandAlert(updateEventURL + event.id, "PUT", updateObj, "太好了!");
+                    fetchandAlert(updateEventURL + event.id.toString(), "PUT", updateObj, "太好了!");
                 }   
             })                               
         },
@@ -343,20 +357,37 @@ $(document).ready(function () {
                 host: host,
                 className: 'colorViewing'
             };
-
-            if(isAnOverlapEvent(eventData) === "True"){
-                $('#newEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);                
-                return;
-            }
-            
-            fetchandAlert(addEventURL, 'POST', eventData,"太棒了!");
+            let newDate = getyesandtom(startDay,endDay);
+            $.ajax({
+                url: isoverlap,
+                type: 'GET',
+                crossDomain: true,
+                contentType: "application/json;charset=utf-8",
+                data: {
+                    roomId:roomId,
+                    monSt: newDate[0],
+                    monEd: newDate[1],
+                    newSt: startDay,
+                    newEn: endDay
+                },
+                async: false
+            })
+            .done(data => { 
+                if(data === "True") {
+                    $('#newEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);              
+                    return;
+                } else {
+                    fetchandAlert(addEventURL, 'POST', eventData,"太棒了!");
                         
-            $("#calendar").fullCalendar('renderEvent', eventData, true);
-            $('#newEventModal').find('input, textarea').val('');
-            $('#newEventModal').find('input:checkbox').prop('checked', false);
-            $('#ends-at').prop('disabled', false);
-            $('#newEventModal').modal('hide');
-
+                    $("#calendar").fullCalendar('renderEvent', eventData, true);
+                    $('#newEventModal').find('input, textarea').val('');
+                    $('#newEventModal').find('input:checkbox').prop('checked', false);
+                    $('#ends-at').prop('disabled', false);
+                    $('#newEventModal').modal('hide');
+                }                          
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(errorThrown)
+            });              
         });
     }
 
@@ -410,33 +441,34 @@ $(document).ready(function () {
             event.end = endDate
             event.note = note
 
+            let overId = getyesandtom(startDate,endDate);
+            console.log(event.id);
             $.ajax({
-                url: isoverlapId+event.id,
+                url: isoverlapId + event.id.toString(),
                 type: 'GET',
+                crossDomain: true,
+                contentType: "application/json;charset=utf-8",
                 data: {
                     roomId: event.roomId,
-                    monst: moment(event.start).add(-1,'days').format('YYYY-MM-DD hh:mm'),
-                    monEd: moment(event.end).add(1,'days').format('YYYY-MM-DD hh:mm'),
-                    newSt: event.start,
-                    newEn: event.end
+                    monSt: overId[0],
+                    monEd: overId[1],
+                    newSt: startDate,
+                    newEn: endDate
                 },
-                datatype: 'json',
                 async: false
             })
             .done(data => { 
                 if(data === "True") {
-                    $('#editEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);                
+                    $('#editEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);              
                     return;
                 } else {
                     fetchandAlert(updateEventURL + event.id, 'PUT', updateObj, "完成!"); 
-                }              
-            
+                    $('#editEventModal').modal('hide');
+                    $("#calendar").fullCalendar('updateEvent', event);
+                }                          
             }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(textStatus)
-            }); 
-            
-            $('#editEventModal').modal('hide');
-            $("#calendar").fullCalendar('updateEvent', event);
+                console.log(errorThrown)
+            });         
         });
 
         $('#deleteEvent').on('click', function () {
