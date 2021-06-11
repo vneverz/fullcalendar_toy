@@ -24,3 +24,48 @@
   color: brown;
   text-align:center;
 }
+#room_view{
+  position: relative;
+  cursor:auto;
+}
+#room_box {
+  display: none;
+  position: absolute;
+  top:2rem;
+  left:2rem;
+  margin: 10px;
+  z-index: 3;
+  width: 180px;
+}
+.op0{
+  background-color: #3a86ff;
+  color: aliceblue;
+}
+.op1{
+  background-color: #8338ec;
+  color: aliceblue;
+}
+.op2{
+  background-color: #048ba8;
+  color: aliceblue;
+}
+.op3{
+  background-color: #0db39e;
+  color: aliceblue;
+}
+.op4{
+  background-color: #e76f51;
+  color: aliceblue;
+}
+.op5{
+  background-color: #db3a34;
+  color: aliceblue;
+}
+.op6{
+  background-color: #da627d;
+  color: aliceblue;
+}
+.op7{
+  background-color: #a53860;
+  color: aliceblue;
+}

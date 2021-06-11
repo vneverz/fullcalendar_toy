@@ -12,10 +12,11 @@ $(document).ready(function () {
         11: "#da627d",
         13: "#a53860"
     }
-    function getyesandtom(st,en){
-        let monSt = moment(st).add(-1,'days').format('YYYY-MM-DD hh:mm');
-        let monEd = moment(en).add(1,'days').format('YYYY-MM-DD hh:mm');
-        let arr = [monSt,monEd];
+
+    function getyesandtom(st, en) {
+        let monSt = moment(st).add(-1, 'days').format('YYYY-MM-DD hh:mm');
+        let monEd = moment(en).add(1, 'days').format('YYYY-MM-DD hh:mm');
+        let arr = [monSt, monEd];
         return arr;
     }
 
@@ -40,8 +41,10 @@ $(document).ready(function () {
             .then(res => {
                 $("#pre-text").text(txt);
                 $("#insavetext").text(res);
+                $('#alertbox').removeClass('alert-danger');
+                $('#alertbox').addClass('alert-success');
                 window.setTimeout(function () {
-                    $("#alertbox").fadeIn(500, 'linear').fadeOut(1800, function () {
+                    $("#alertbox").fadeIn(500, 'linear').fadeOut(1200, function () {
                         $(this).hide();
                     });
                 }, 100)
@@ -60,12 +63,23 @@ $(document).ready(function () {
                         .append($("<option></option>")
                             .attr("value", value.RomeId)
                             .text(value.Name));
+                    $('#room_box').append($("<div></div>")
+                    .attr("class", "op"+key)
+                    .text(value.Name));
                 })
             ).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(textStatus)
             });
     }
     getRoomlist();
+
+    $(function(){
+        $('#room_view').hover(function() {
+          $('#room_box').css('display','block');
+        }, function() {
+          $('#room_box').css('display','none');
+        })
+      })
 
     var calendar = $('#calendar').fullCalendar({
 
@@ -153,35 +167,36 @@ $(document).ready(function () {
                 "note": event.note,
                 "timeId": moment().format('YYYY-MM-DD HH:mm:ss')
             }
-            let arEdit = getyesandtom(event.start,event.end);
+            let arEdit = getyesandtom(event.start, event.end);
 
-            fetch(isoverlapId + event.id  +'?'+ new URLSearchParams({
-                roomId: event.roomId,
-                monSt: arEdit[0],
-                monEd: arEdit[1],
-                newSt: updateObj.start,
-                newEn: updateObj.end
-            }), {
-                method: 'GET',
-                mode: 'cors'
-            })
-            .then(res => res.text())
-            .then(res => {
-                if(res === "True"){
-                    window.setTimeout(function () {
-                        $('#alertbox').removeClass('alert-success');
-                        $('#alertbox').addClass('alert-danger');
-                        $("#pre-text").text("喔哦～");
-                        $("#insavetext").text("時間相衝了😮");
-                        $("#alertbox").fadeIn(500, 'linear').fadeOut(1800, function () {
-                            $(this).hide();
-                        });
-                    }, 100)               
-                    revertFunc();
-                } else {
-                    fetchandAlert(updateEventURL + event.id.toString(), "PUT", updateObj, "太好了!");
-                }   
-            })                               
+            fetch(isoverlapId + event.id + '?' + new URLSearchParams({
+                    roomId: event.roomId,
+                    monSt: arEdit[0],
+                    monEd: arEdit[1],
+                    newSt: updateObj.start,
+                    newEn: updateObj.end
+                }), {
+                    method: 'GET',
+                    mode: 'cors'
+                })
+                .then(res => res.text())
+                .then(res => {
+                    if (res === "True") {
+                        window.setTimeout(function () {
+                            $('#alertbox').removeClass('alert-success');
+                            $('#alertbox').addClass('alert-danger');
+                            $("#pre-text").text("喔哦～");
+                            $("#insavetext").text("時間相衝了😮");
+                            $(".popover").hide();
+                            $("#alertbox").fadeIn(500, 'linear').fadeOut(1800, function () {
+                                $(this).hide();
+                            });
+                        }, 100)
+                        revertFunc();
+                    } else {
+                        fetchandAlert(updateEventURL + event.id.toString(), "PUT", updateObj, "太好了!");
+                    }
+                })
         },
         unselect: function (jsEvent, view) {},
         select: function (startDate, endDate, jsEvent, view) {
@@ -242,9 +257,7 @@ $(document).ready(function () {
 
         },
         eventClick: function (event, jsEvent, view) {
-
             editEvent(event);
-
         },
         locale: 'zh-tw', // 改變顯示語言
         nextDayThreshold: "09:00:00",
@@ -258,7 +271,7 @@ $(document).ready(function () {
         eventLimit: true,
         eventLimitClick: 'week', //popover
         navLinks: true,
-        defaultDate: '2021-05-21',
+        defaultDate: moment(),
         timeFormat: 'HH:mm',
         defaultTimedEventDuration: '01:00:00',
         editable: true,
@@ -279,6 +292,7 @@ $(document).ready(function () {
                     arrl.push({
                         "title": val.eTitle,
                         "id": val.id,
+                        "workId": val.workId,
                         "start": moment(val.startDay).utc().format('YYYY-MM-DD HH:mm:ss').toString(),
                         "end": moment(val.endDay).utc().format('YYYY-MM-DD HH:mm:ss').toString(),
                         "note": val.note,
@@ -357,119 +371,128 @@ $(document).ready(function () {
                 host: host,
                 className: 'colorViewing'
             };
-            let newDate = getyesandtom(startDay,endDay);
+            let newDate = getyesandtom(startDay, endDay);
             $.ajax({
-                url: isoverlap,
-                type: 'GET',
-                crossDomain: true,
-                contentType: "application/json;charset=utf-8",
-                data: {
-                    roomId:roomId,
-                    monSt: newDate[0],
-                    monEd: newDate[1],
-                    newSt: startDay,
-                    newEn: endDay
-                },
-                async: false
-            })
-            .done(data => { 
-                if(data === "True") {
-                    $('#newEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);              
-                    return;
-                } else {
-                    fetchandAlert(addEventURL, 'POST', eventData,"太棒了!");
-                        
-                    $("#calendar").fullCalendar('renderEvent', eventData, true);
-                    $('#newEventModal').find('input, textarea').val('');
-                    $('#newEventModal').find('input:checkbox').prop('checked', false);
-                    $('#ends-at').prop('disabled', false);
-                    $('#newEventModal').modal('hide');
-                }                          
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown)
-            });              
+                    url: isoverlap,
+                    type: 'GET',
+                    crossDomain: true,
+                    contentType: "application/json;charset=utf-8",
+                    data: {
+                        roomId: roomId,
+                        monSt: newDate[0],
+                        monEd: newDate[1],
+                        newSt: startDay,
+                        newEn: endDay
+                    },
+                    async: false
+                })
+                .done(data => {
+                    if (data === "True") {
+                        $('#newEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);
+                        return;
+                    } else {
+                        fetchandAlert(addEventURL, 'POST', eventData, "太棒了!");
+
+                        $("#calendar").fullCalendar('renderEvent', eventData, true);
+                        $('#newEventModal').find('input, textarea').val('');
+                        $('#newEventModal').find('input:checkbox').prop('checked', false);
+                        $('#ends-at').prop('disabled', false);
+                        $('#newEventModal').modal('hide');
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown)
+                });
         });
     }
 
     //EDIT EVENT CALENDAR
 
     editEvent = function (event, element, view) {
-
+        $("#contextMenu").hide();
         $('.popover.fade.top').remove();
         $(element).popover("hide");
         //$(".dropdown").hide().css("visibility", "hidden");
-        $('#editHost').val(event.host);
-        $('#editAttendees').val(event.attendees);
-        $('#getRoomsEdit option[value=' + event.roomId + ']').prop("selected", true);
-        $('#editTitle').val(event.title);
-        $('#editStartDate').val(event.start.format('YYYY-MM-DD HH:mm'));
-        $('#editEndDate').val(event.end.format('YYYY-MM-DD HH:mm'));
-        $('#edit-event-desc').val(event.note);
-        $('.eventName').text(":" + event.title);
-        $('#editEventModal').modal('show');
-        $('#updateEvent').unbind();
-        $('#updateEvent').on('click', function () {
-            var host = $('input#editHost').val().trim();
-            var attendees = $('input#editAttendees').val();
-            var roomId = $('#getRoomsEdit option').filter(':selected').val();
-            var title = $('input#editTitle').val().trim();
-            var startDate = $('input#editStartDate').val();
-            var endDate = $('input#editEndDate').val();
-            var note = $('#edit-event-desc').val().trim();
-            if (!validateTxt(title)) {
-                alert("必填未填或輸入含特殊符號請修正!");
-                return;
-            }
-            var eventData;
-            var updateObj = {
-                "host": host,
-                "attendees": attendees,
-                "roomId": roomId,
-                "title": title,
-                "start": startDate,
-                "end": endDate,
-                "note": note,
-                "timeId": moment().format('YYYY-MM-DD HH:mm:ss')
-            };
-
-            event.host = host
-            event.roomId = roomId
-            event.backgroundColor = roomcolors[roomId]
-            event.attendees = attendees
-            event.title = title
-            event.start = startDate
-            event.end = endDate
-            event.note = note
-
-            let overId = getyesandtom(startDate,endDate);
-            console.log(event.id);
-            $.ajax({
-                url: isoverlapId + event.id.toString(),
-                type: 'GET',
-                crossDomain: true,
-                contentType: "application/json;charset=utf-8",
-                data: {
-                    roomId: event.roomId,
-                    monSt: overId[0],
-                    monEd: overId[1],
-                    newSt: startDate,
-                    newEn: endDate
-                },
-                async: false
-            })
-            .done(data => { 
-                if(data === "True") {
-                    $('#editEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);              
+        if (event.workId == tempWorkId) {
+            $("fieldset").prop("disabled", false);
+            $('#deleteEvent').prop("disabled", false);
+            $('#updateEvent').prop("disabled", false);
+        } else {
+            $("fieldset").prop("disabled", true);
+            $('#deleteEvent').prop("disabled", true);
+            $('#updateEvent').prop("disabled", true);
+        }
+            $('#editHost').val(event.host);
+            $('#editAttendees').val(event.attendees);
+            $('#getRoomsEdit option[value=' + event.roomId + ']').prop("selected", true);
+            $('#editTitle').val(event.title);
+            $('#editStartDate').val(event.start.format('YYYY-MM-DD HH:mm'));
+            $('#editEndDate').val(event.end.format('YYYY-MM-DD HH:mm'));
+            $('#edit-event-desc').val(event.note);
+            $('.eventName').text(":" + event.title);
+            $('#editEventModal').modal('show');
+            $('#updateEvent').unbind();
+            $('#updateEvent').on('click', function () {
+                var host = $('input#editHost').val().trim();
+                var attendees = $('input#editAttendees').val();
+                var roomId = $('#getRoomsEdit option').filter(':selected').val();
+                var title = $('input#editTitle').val().trim();
+                var startDate = $('input#editStartDate').val();
+                var endDate = $('input#editEndDate').val();
+                var note = $('#edit-event-desc').val().trim();
+                if (!validateTxt(title)) {
+                    alert("必填未填或輸入含特殊符號請修正!");
                     return;
-                } else {
-                    fetchandAlert(updateEventURL + event.id, 'PUT', updateObj, "完成!"); 
-                    $('#editEventModal').modal('hide');
-                    $("#calendar").fullCalendar('updateEvent', event);
-                }                          
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown)
-            });         
-        });
+                }
+                var eventData;
+                var updateObj = {
+                    "host": host,
+                    "attendees": attendees,
+                    "roomId": roomId,
+                    "title": title,
+                    "start": startDate,
+                    "end": endDate,
+                    "note": note,
+                    "timeId": moment().format('YYYY-MM-DD HH:mm:ss')
+                };
+
+                event.host = host
+                event.roomId = roomId
+                event.backgroundColor = roomcolors[roomId]
+                event.attendees = attendees
+                event.title = title
+                event.start = startDate
+                event.end = endDate
+                event.note = note
+
+                let overId = getyesandtom(startDate, endDate);
+                console.log(event.id);
+                $.ajax({
+                        url: isoverlapId + event.id.toString(),
+                        type: 'GET',
+                        crossDomain: true,
+                        contentType: "application/json;charset=utf-8",
+                        data: {
+                            roomId: event.roomId,
+                            monSt: overId[0],
+                            monEd: overId[1],
+                            newSt: startDate,
+                            newEn: endDate
+                        },
+                        async: false
+                    })
+                    .done(data => {
+                        if (data === "True") {
+                            $('#editEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);
+                            return;
+                        } else {
+                            fetchandAlert(updateEventURL + event.id, 'PUT', updateObj, "完成!");
+                            $('#editEventModal').modal('hide');
+                            $("#calendar").fullCalendar('updateEvent', event);
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log(errorThrown)
+                    });
+            });
 
         $('#deleteEvent').on('click', function () {
             $('#deleteEvent').unbind();
