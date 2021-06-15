@@ -1,85 +1,75 @@
-.op7, .op6, .op5, .op4, .op3, .op2, .op1, .op0 {
-  padding: 5px;
+%op-style {
+  padding: 5px;;
   color: aliceblue;
 }
-
 .fc-event, .fc-event-dot {
-  background-color: #47acdf;
+    background-color: #47acdf;
 }
-
 #alertbox {
-  display: none;
-  position: fixed;
-  top: 3rem;
+  display:none;
+  position:fixed;
+  top:3rem;
   right: 1.5rem;
   z-index: 1;
 }
-
 #wrapper {
   font-size: 1.6rem;
 }
-
 .fc-title {
   font-size: 1.8rem;
 }
-
 .show-wind {
   font-size: 1.5rem;
-  color: #636060;
+  color: rgb(99 96 96);
 }
-
-.showTxt {
+.showTxt{
   display: none;
   font-size: 18px;
   color: brown;
-  text-align: center;
+  text-align:center;
 }
-
-#room_view {
+#room_view{
   position: relative;
-  cursor: auto;
+  cursor:auto;
 }
-
 #room_box {
   display: none;
   position: absolute;
-  top: 2rem;
-  left: 2rem;
+  top:2rem;
+  left:2rem;
   margin: 10px;
   z-index: 3;
   width: 180px;
 }
-
-.op0 {
+.op0{
   background-color: #3a86ff;
+  @extend %op-style;
 }
-
-.op1 {
+.op1{
   background-color: #8338ec;
+  @extend %op-style;
 }
-
-.op2 {
+.op2{
   background-color: #048ba8;
+  @extend %op-style;
 }
-
-.op3 {
+.op3{
   background-color: #0db39e;
+  @extend %op-style;
 }
-
-.op4 {
+.op4{
   background-color: #e76f51;
+  @extend %op-style;
 }
-
-.op5 {
+.op5{
   background-color: #db3a34;
+  @extend %op-style;
 }
-
-.op6 {
+.op6{
   background-color: #da627d;
+  @extend %op-style;
 }
-
-.op7 {
+.op7{
   background-color: #a53860;
+  @extend %op-style;
 }
-
-/*# sourceMappingURL=costum.css.map */
