@@ -12,6 +12,16 @@ $(document).ready(function () {
         11: "#da627d",
         13: "#a53860"
     }
+    const roomTitle = {
+        1: "第一會議室(大會議室",
+        2: "第二會議室(管理部前)",
+        3: "第三會議室(財會部前)",
+        6: "第四會議室(管理部旁)",
+        9: "第五會議室(業務辦公室旁)",
+        10: "多媒體會議中心",
+        11: "第七會議室(生產辦公室)",
+        13: "共識樓會議室"
+    }
 
     function getyesandtom(st, en) {
         let monSt = moment(st).add(-1, 'days').format('YYYY-MM-DD hh:mm');
@@ -42,7 +52,7 @@ $(document).ready(function () {
                 $("#pre-text").text(txt);
                 $("#insavetext").text(res);
                 $('#alertbox').removeClass('alert-danger');
-                $('#alertbox').addClass('alert-success');
+                if(!$("#alertbox").hasClass( "alert-success" )) {$('#alertbox').addClass('alert-success');}
                 window.setTimeout(function () {
                     $("#alertbox").fadeIn(500, 'linear').fadeOut(1200, function () {
                         $(this).hide();
@@ -60,7 +70,7 @@ $(document).ready(function () {
             .done(data =>
                 $.each(data, function (key, value) {
                     $('#getRooms, #getRoomsEdit')
-                        .append($("<option></option>")
+                        .append($("<option class='op"+key +"'></option>")
                             .attr("value", value.RomeId)
                             .text(value.Name));
                     $('#room_box').append($("<div></div>")
@@ -97,6 +107,7 @@ $(document).ready(function () {
                 content: '<div class="popoverInfoCalendar">' +
                     '<p><strong>主席:</strong> ' + event.host + '</p>' +
                     '<p><strong>會議時間:</strong> ' + displayEventDate + '</p>' +
+                    '<p><strong>會議室:</strong> ' + roomTitle[event.roomId] + '</p>' +
                     '<div class="popoverDescCalendar"><strong>內容:</strong> ' + event.note + '</div>' +
                     '</div>',
                 delay: {
@@ -184,7 +195,7 @@ $(document).ready(function () {
                     if (res === "True") {
                         window.setTimeout(function () {
                             $('#alertbox').removeClass('alert-success');
-                            $('#alertbox').addClass('alert-danger');
+                            if(!$("#alertbox").hasClass( "alert-danger" )) {$('#alertbox').addClass('alert-danger');}
                             $("#pre-text").text("喔哦～");
                             $("#insavetext").text("時間相衝了😮");
                             $(".popover").hide();
@@ -358,6 +369,10 @@ $(document).ready(function () {
                 alert("必填未填或輸入含特殊符號請修正!");
                 return;
             }
+            if (!validateTxt(host)) {
+                alert("必填未填或輸入含特殊符號請修正!");
+                return;
+            }
 
             var eventData = {
                 title: title,
@@ -369,6 +384,7 @@ $(document).ready(function () {
                 roomId: roomId,
                 backgroundColor: roomcolors[roomId],
                 host: host,
+                workId:workId,
                 className: 'colorViewing'
             };
             let newDate = getyesandtom(startDay, endDay);
@@ -387,10 +403,10 @@ $(document).ready(function () {
                     async: false
                 })
                 .done(data => {
-                    if (data === "True") {
+                    if (data === "True" && workId !== '') {
                         $('#newEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);
                         return;
-                    } else {
+                    } else {                        
                         fetchandAlert(addEventURL, 'POST', eventData, "太棒了!");
 
                         $("#calendar").fullCalendar('renderEvent', eventData, true);
@@ -412,7 +428,7 @@ $(document).ready(function () {
         $('.popover.fade.top').remove();
         $(element).popover("hide");
         //$(".dropdown").hide().css("visibility", "hidden");
-        if (event.workId == tempWorkId) {
+        if (event.workId == workId) {
             $("fieldset").prop("disabled", false);
             $('#deleteEvent').prop("disabled", false);
             $('#updateEvent').prop("disabled", false);
@@ -439,11 +455,18 @@ $(document).ready(function () {
                 var startDate = $('input#editStartDate').val();
                 var endDate = $('input#editEndDate').val();
                 var note = $('#edit-event-desc').val().trim();
+                if (startDate > endDate) {
+                    $('#starts-at').val("開始時間晚於結束時間，請重新輸入！");
+                    return;
+                }
                 if (!validateTxt(title)) {
                     alert("必填未填或輸入含特殊符號請修正!");
                     return;
                 }
-                var eventData;
+                if (!validateTxt(host)) {
+                    alert("必填未填或輸入含特殊符號請修正!");
+                    return;
+                }
                 var updateObj = {
                     "host": host,
                     "attendees": attendees,
@@ -464,10 +487,9 @@ $(document).ready(function () {
                 event.end = endDate
                 event.note = note
 
-                let overId = getyesandtom(startDate, endDate);
-                console.log(event.id);
+                let overId = getyesandtom(startDate, endDate);                
                 $.ajax({
-                        url: isoverlapId + event.id.toString(),
+                        url: isoverlapId + event.id,
                         type: 'GET',
                         crossDomain: true,
                         contentType: "application/json;charset=utf-8",
@@ -481,7 +503,7 @@ $(document).ready(function () {
                         async: false
                     })
                     .done(data => {
-                        if (data === "True") {
+                        if (data === "True" && workId == event.workId) {
                             $('#editEventModal .showTxt').fadeIn(200).delay(1200).fadeOut(200);
                             return;
                         } else {
