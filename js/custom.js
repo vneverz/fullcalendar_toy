@@ -33,7 +33,7 @@ $(document).ready(function () {
 
     function validateTxt(txt) {
         //至少
-        var re = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+        var re = /^[a-z\%\$\#\@\!\(\)\-\A-Z0-9_\u4e00-\u9fa5_]+$/;
         if (re.test(txt)) {
             return true
         } else {
@@ -384,7 +384,7 @@ $(document).ready(function () {
                 roomId: roomId,
                 backgroundColor: roomcolors[roomId],
                 host: host,
-                workId:workId,
+                workId: workId,
                 className: 'colorViewing'
             };
             let newDate = getyesandtom(startDay, endDay);
