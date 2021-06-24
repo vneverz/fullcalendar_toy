@@ -163,11 +163,24 @@ $(document).ready(function () {
         eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
             $('.popover.fade.top').remove();
         },
-        eventDragStart: function (event, jsEvent, ui, view) {
+        eventDragStart: function (event, jsEvent, ui, view) {            
             // var draggedEventIsAllDay;
             // draggedEventIsAllDay = event.allDay;
         },
         eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
+            if(event.workId !== workId ) {
+                window.setTimeout(function () {
+                    $('#alertbox').removeClass('alert-success');
+                    if(!$("#alertbox").hasClass( "alert-danger" )) {$('#alertbox').addClass('alert-danger');}
+                    $("#pre-text").text("No～");
+                    $("#insavetext").text("你非會議建立人😮");
+                    $(".popover").hide();
+                    $("#alertbox").fadeIn(500, 'linear').fadeOut(1800, function () {
+                        $(this).hide();
+                    });
+                }, 100)
+                revertFunc();
+            } else {
             let updateObj = {
                 "host": event.host,
                 "attendees": event.attendees,
@@ -208,6 +221,7 @@ $(document).ready(function () {
                         fetchandAlert(updateEventURL + event.id.toString(), "PUT", updateObj, "太好了!");
                     }
                 })
+            }
         },
         unselect: function (jsEvent, view) {},
         select: function (startDate, endDate, jsEvent, view) {
